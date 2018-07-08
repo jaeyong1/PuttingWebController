@@ -2,17 +2,23 @@ package com.jyp.putting.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jyp.putting.domiain.FieldItem;
+import com.jyp.putting.domiain.Player;
+import com.jyp.putting.service.ItemService;
 import com.jyp.putting.utils.MQTTPublishTest;
 
 /**
@@ -20,6 +26,12 @@ import com.jyp.putting.utils.MQTTPublishTest;
  */
 @Controller
 public class HomeController {
+
+	/*
+	 * Controller - Service 연결
+	 */
+	@Autowired
+	private ItemService itemService;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -39,18 +51,20 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginGet(Locale locale, Model model) {
+	public String loginGet(Locale locale, Model model, HttpSession session) {
 		logger.info("Get - View Fields {}.", locale);
 
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		String formattedDate = dateFormat.format(date);
 		model.addAttribute("serverTime", formattedDate);
+
+		session.setAttribute("playerInfo", null);
 		return "login";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public synchronized String loginPost(Locale locale, Model model, HttpServletRequest request) {
+	public synchronized String loginPost(Locale locale, Model model, HttpServletRequest request, HttpSession session) {
 		String strID = request.getParameter("user-Id");
 		String rpiID = "1";
 		logger.info("Post - View Fields {}. {}", locale, strID);
@@ -66,8 +80,17 @@ public class HomeController {
 		successlogin = true;
 
 		if (successlogin == true) {
+
+			Player player = new Player();// DUMMYitemService.findByUserId(reqID);
+			// make Player Object -DUMMY
+			player.setLocationId(100);
+			player.setLocationName("부천지점");
+			player.setDeviceId(1);
+
+			session.setAttribute("playerInfo", player);
 			return "redirect:mainmenu";// viewfieldsGet(locale, model);
 		} else {
+			session.setAttribute("playerInfo", null);
 			return "login";
 		}
 	}
@@ -95,6 +118,11 @@ public class HomeController {
 		 */
 		logger.info("Get - View Mainmenu {}.", locale);
 
+		int pagenum = 1;
+		List<FieldItem> items = itemService.queryFieldItems(pagenum);
+		model.addAttribute("items", items);
+
+		System.out.println(items.size());
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		String formattedDate = dateFormat.format(date);
