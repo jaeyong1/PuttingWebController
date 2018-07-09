@@ -27,17 +27,36 @@
 <link
 	href="bootstrap/startbootstrap-full-slider-gh-pages/css/full-slider.css"
 	rel="stylesheet">
-	
-	
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
 </head>
 
 <body>
 
+	<!-- Navigation -->
+	<script>
+		function logout() {
+			var response = confirm("로그아웃 하시겠습니까?")
+			if (response) {
+				//do yes task
+				window.location.href = 'login';
+			} else {
+				//do no task
+			}
+
+		}
+		function login() {
+			window.location.href = 'login';
+		}
+	</script>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
@@ -57,6 +76,26 @@
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 					</li>
+
+					<!-- 로그인 정보 -->
+					<c:choose>
+						<c:when test="${not empty sessionScope.playerInfo }">
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:logout();"> <c:out
+										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
+									연결중
+							</a></li>
+						</c:when>
+						<c:otherwise>
+
+
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:login();"> 로그인 </a></li>
+
+
+						</c:otherwise>
+					</c:choose>
+					<!-- ./ 로그인 정보 -->
 				</ul>
 			</div>
 		</div>
@@ -72,32 +111,23 @@
 				<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
 			</ol>
 			<div class="carousel-inner" role="listbox">
+
 				<!-- Slide One - Set the background image for this slide in the line below -->
 				<div class="carousel-item active"
-					style="background-image: url('http://placehold.it/1900x1080')">
-					<div class="carousel-caption d-none d-md-block">
-						<h3>First Slide</h3>
-						<p>This is a description for the first slide.</p>
-						<button type="button" class="btn btn-info btn-lg"
-							data-toggle="modal" data-target="#myModal">적용하기</button>
-					</div>
+					style="background-image: url('mapinfo/${sessionScope.playerInfo.selectedMapId}/1900title.jpg')">
+
 				</div>
+
 				<!-- Slide Two - Set the background image for this slide in the line below -->
 				<div class="carousel-item"
-					style="background-image: url('http://placehold.it/1900x1080')">
-					<div class="carousel-caption d-none d-md-block">
-						<h3>Second Slide</h3>
-						<p>This is a description for the second slide.</p>
-					</div>
-				</div>
+					style="background-image: url('mapinfo/${sessionScope.playerInfo.selectedMapId}/1900outlinemap.jpg')"></div>
+
 				<!-- Slide Three - Set the background image for this slide in the line below -->
 				<div class="carousel-item"
 					style="background-image: url('http://placehold.it/1900x1080')">
-					<div class="carousel-caption d-none d-md-block">
-						<h3>Third Slide</h3>
-						<p>This is a description for the third slide.</p>
-					</div>
+
 				</div>
+
 			</div>
 			<a class="carousel-control-prev" href="#carouselExampleIndicators"
 				role="button" data-slide="prev"> <span
@@ -112,6 +142,11 @@
 	</header>
 
 	<!-- Page Content -->
+	<center>
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal"
+			data-target="#myModal">적용하기</button>
+	</center>
+
 	<section class="py-5">
 		<div class="container">
 			<h1>Full Slider by Start Bootstrap</h1>

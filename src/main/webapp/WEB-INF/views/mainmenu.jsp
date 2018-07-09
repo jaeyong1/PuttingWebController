@@ -41,7 +41,10 @@
 			} else {
 				//do no task
 			}
-			
+
+		}
+		function login() {
+			window.location.href = 'login';
 		}
 	</script>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -63,10 +66,25 @@
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 					</li>
-					<li class="nav-item"><a class="nav-link" OnClick="javascript:logout();" > <c:out
-								value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
-							연결중
-					</a></li>
+					<!-- 로그인 정보 -->
+					<c:choose>
+						<c:when test="${not empty sessionScope.playerInfo }">
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:logout();"> <c:out
+										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
+									연결중
+							</a></li>
+						</c:when>
+						<c:otherwise>
+
+
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:login();"> 로그인 </a></li>
+
+
+						</c:otherwise>
+					</c:choose>
+					<!-- ./ 로그인 정보 -->
 				</ul>
 			</div>
 		</div>

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -42,12 +43,7 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
-		return "home";
+		return "redirect:login";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -68,11 +64,6 @@ public class HomeController {
 		String strID = request.getParameter("user-Id");
 		String rpiID = "1";
 		logger.info("Post - View Fields {}. {}", locale, strID);
-
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
 
 		new MQTTPublishTest(rpiID, strID);
 		boolean successlogin = false;
@@ -103,10 +94,6 @@ public class HomeController {
 		 */
 		logger.info("Get - View Mainmenu {}.", locale);
 
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
 		return "mainmenu";// .jpp
 	}
 
@@ -122,16 +109,19 @@ public class HomeController {
 		List<FieldItem> items = itemService.queryFieldItems(pagenum);
 		model.addAttribute("items", items);
 
-		System.out.println(items.size());
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
 		return "fieldselect_lesson";// .jpp
 	}
 
 	@RequestMapping(value = "/fieldselect", method = RequestMethod.GET)
-	public String fieldselectGet(Locale locale, Model model) {
+	public String fieldselectGet(Locale locale, Model model, HttpServletRequest request, HttpSession session) {
+		// map ID GET파라미터
+		String mapid = request.getParameter("mapid");
+
+		// session 확인
+		Player player = (Player) request.getSession().getAttribute("playerInfo");
+		player.setSelectedMapId(Integer.parseInt(mapid));
+		session.setAttribute("playerInfo", player);
+
 		/*-
 		 * Theme site : https://startbootstrap.com/template-overviews/full-slider/
 		 * from : https://startbootstrap.com/template-categories/all/

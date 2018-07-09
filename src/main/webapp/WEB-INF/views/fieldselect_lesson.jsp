@@ -30,7 +30,22 @@
 </head>
 
 <body>
+	<!-- Navigation -->
+	<script>
+		function logout() {
+			var response = confirm("로그아웃 하시겠습니까?")
+			if (response) {
+				//do yes task
+				window.location.href = 'login';
+			} else {
+				//do no task
+			}
 
+		}
+		function login() {
+			window.location.href = 'login';
+		}
+	</script>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
@@ -50,6 +65,26 @@
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 					</li>
+
+					<!-- 로그인 정보 -->
+					<c:choose>
+						<c:when test="${not empty sessionScope.playerInfo }">
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:logout();"> <c:out
+										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
+									연결중
+							</a></li>
+						</c:when>
+						<c:otherwise>
+
+
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:login();"> 로그인 </a></li>
+
+
+						</c:otherwise>
+					</c:choose>
+					<!-- ./ 로그인 정보 -->
 				</ul>
 			</div>
 		</div>
@@ -63,14 +98,13 @@
 			Lesson<small>차곡차곡 경험을 쌓아보세요</small>
 		</h1>
 
-		<!-- DB 데이터 채움 (클래스 변수사용) -->
+		<!-- DB 데이터 표시 -->
 		<c:forEach var="i" items="${items}" varStatus="status">
 
 			<!-- Project One -->
 			<div class="row">
 				<div class="col-md-7">
-					<a href="#"> <!-- <img class="img-fluid rounded mb-3 mb-md-0"	src="http://placehold.it/700x300" alt="">  -->
-						<img class="img-fluid rounded mb-3 mb-md-0"
+					<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
 						src="mapinfo/${i.id}/700lesson.jpg" alt="">
 					</a>
 				</div>
@@ -79,8 +113,8 @@
 					<h3>${i.ccname}${i.holename}</h3>
 					<!-- 난이도별+설명 -->
 					<p>${i.desc}</p>
-					<a class="btn btn-primary" href="fieldselect">자세히 보기</a> <a
-						class="btn btn-primary" href="fieldselect">필드적용</a>
+					<a class="btn btn-primary" href="fieldselect?mapid=${i.id}">자세히
+						보기</a> <a class="btn btn-primary" href="fieldselect?mapid=${i.id}">필드적용</a>
 				</div>
 			</div>
 			<!-- /.row -->
