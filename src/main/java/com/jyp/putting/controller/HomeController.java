@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jyp.putting.domiain.FieldItem;
-import com.jyp.putting.domiain.Player;
+import com.jyp.putting.dao.ItemDao;
+import com.jyp.putting.domain.FieldItem;
+import com.jyp.putting.domain.Player;
 import com.jyp.putting.service.ItemService;
 import com.jyp.putting.utils.MQTTPublishTest;
 
@@ -27,6 +29,10 @@ import com.jyp.putting.utils.MQTTPublishTest;
  */
 @Controller
 public class HomeController {
+
+	  
+    @Inject
+    private ItemDao dao;
 
 	/*
 	 * Controller - Service 연결

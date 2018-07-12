@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jyp.putting.dao.ItemDao;
-import com.jyp.putting.domiain.FieldItem;
+import com.jyp.putting.domain.FieldItem;
 
 @Service("itemService")
 public class ItemService {
@@ -18,8 +18,10 @@ public class ItemService {
 	public List<FieldItem> queryFieldItems(int page) {
 		List<FieldItem> itemes = new ArrayList<FieldItem>();
 
-		itemDao.queryItems();
-		
+		FieldItem a = new FieldItem(5, "AA", "BB", "CC", "dd");
+		List<FieldItem> itemes1 = itemDao.queryItems();
+		System.out.println("DB Length = " + itemes1.size());
+
 		// query DB.... with page num..
 		// TEMP data
 		itemes.add(new FieldItem(1, "바닷바람CC", "1홀",

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="topologyMapper">
+
+	<insert id="insertItem">
+		INSERT INTO `jaeyong1`.`put_fields` (
+		`id` ,
+		`ccname` ,
+		`holename` ,
+		`desc` ,
+		`heightdata`
+		)
+		VALUES (
+		'4', 'A', 'B', 'C', 'D'
+		);
+
+	</insert>
+	
+	<select id="selectItemList" resultMap="FieldItemMap">
+		SELECT *
+		FROM `put_fields`
+		LIMIT 0 , 30
+	</select>
+	
+	<select id="getDBServerTime" resultType="string">
+		select now()
+	</select>
+
+
+
+</mapper>

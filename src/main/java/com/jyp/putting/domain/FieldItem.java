@@ -1,4 +1,4 @@
-package com.jyp.putting.domiain;
+package com.jyp.putting.domain;
 
 public class FieldItem {
 	int id;

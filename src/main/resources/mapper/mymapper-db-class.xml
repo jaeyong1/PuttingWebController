@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="topologyMapper">
+
+
+	<!-- DB 쿼리결과 - 클래스 변수명 매칭 테이블 -->
+	<resultMap id="FieldItemMap" type="com.jyp.putting.domain.FieldItem">
+		<result property="id" column="id" />
+		<result property="ccname" column="ccname" />
+		<result property="holename" column="holename" />
+		<result property="desc" column="desc" />
+		<result property="heightdata" column="heightdata" />
+	</resultMap>
+</mapper>

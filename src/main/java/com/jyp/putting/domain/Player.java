@@ -1,4 +1,4 @@
-package com.jyp.putting.domiain;
+package com.jyp.putting.domain;
 
 public class Player {
 	int LocationId; // 지점ID
