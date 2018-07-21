@@ -1,34 +1,68 @@
 package com.jyp.putting.domain;
 
 public class Player {
-	int LocationId; // 지점ID
-	String LocationName; // 지점이름
-	int deviceId; // 장치ID
+	String loginId; // 로그인아이디
+	String locationId; // 지점ID
+	String locationName; // 지점이름
+	String deviceId; // 장치ID
 	int selectedMapId; // 선택한 지도 ID
 	String heightData; // 높이데이터
 	int runState; // 동작상태
 
-	public int getLocationId() {
-		return LocationId;
+	public Player() {
+		super();
+	}
+	
+	public Player(String loginId, String locationId, String locationName, String deviceId, int selectedMapId,
+			String heightData, int runState) {
+		super();
+		this.loginId = loginId;
+		this.locationId = locationId;
+		this.locationName = locationName;
+		this.deviceId = deviceId;
+		this.selectedMapId = selectedMapId;
+		this.heightData = heightData;
+		this.runState = runState;
 	}
 
-	public void setLocationId(int locationId) {
-		LocationId = locationId;
+	
+
+	@Override
+	public String toString() {
+		return "Player [loginId=" + loginId + ", locationId=" + locationId + ", locationName=" + locationName
+				+ ", deviceId=" + deviceId + ", selectedMapId=" + selectedMapId + ", heightData=" + heightData
+				+ ", runState=" + runState + "]";
+	}
+
+	public String getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
 	}
 
 	public String getLocationName() {
-		return LocationName;
+		return locationName;
 	}
 
 	public void setLocationName(String locationName) {
-		LocationName = locationName;
+		this.locationName = locationName;
 	}
 
-	public int getDeviceId() {
+	public String getDeviceId() {
 		return deviceId;
 	}
 
-	public void setDeviceId(int deviceId) {
+	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
 	}
 
@@ -53,21 +87,6 @@ public class Player {
 	}
 
 	public void setRunState(int runState) {
-		this.runState = runState;
-	}
-
-	public Player() {
-		super();
-	}
-
-	public Player(int locationId, String locationName, int deviceId, int selectedMapId, String heightData,
-			int runState) {
-		super();
-		LocationId = locationId;
-		LocationName = locationName;
-		this.deviceId = deviceId;
-		this.selectedMapId = selectedMapId;
-		this.heightData = heightData;
 		this.runState = runState;
 	}
 

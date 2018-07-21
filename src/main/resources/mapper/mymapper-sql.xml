@@ -17,17 +17,34 @@
 		);
 
 	</insert>
-	
+
 	<select id="selectItemList" resultMap="FieldItemMap">
 		SELECT *
 		FROM `put_fields`
 		LIMIT 0 , 30
 	</select>
-	
+
 	<select id="getDBServerTime" resultType="string">
 		select now()
 	</select>
 
 
+	<select id="queryPlayerByIDPW" parameterType="String" resultMap="PlayerItemMap">
+		SELECT
+		`loginId`,
+		`locationId`,
+		`locationName`,
+		`deviceId`,
+		`selectedMapId`,
+		`heightData`,
+		`runState`
+		FROM
+		put_player
+		WHERE
+		`loginId` =
+		#{logingUserId} AND
+		`password`
+		= #{loginUserPassword}
+	</select>
 
 </mapper>

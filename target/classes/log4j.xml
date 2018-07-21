@@ -9,9 +9,24 @@
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
-	
+
 	<!-- Application Loggers -->
 	<logger name="com.jyp.putting.controller">
+		<level value="info" />
+	</logger>
+
+	<!-- Service Loggers [ADD by JYP] -->
+	<logger name="com.jyp.putting.service">
+		<level value="info" />
+	</logger>
+
+	<!-- DAO Loggers [ADD by JYP] -->
+	<logger name="com.jyp.putting.dao">
+		<level value="info" />
+	</logger>
+	
+	<!-- MQTT Loggers [ADD by JYP] -->
+	<logger name="com.jyp.putting.utils">
 		<level value="info" />
 	</logger>
 	
@@ -19,11 +34,11 @@
 	<logger name="org.springframework.core">
 		<level value="info" />
 	</logger>
-	
+
 	<logger name="org.springframework.beans">
 		<level value="info" />
 	</logger>
-	
+
 	<logger name="org.springframework.context">
 		<level value="info" />
 	</logger>
@@ -37,5 +52,5 @@
 		<priority value="warn" />
 		<appender-ref ref="console" />
 	</root>
-	
+
 </log4j:configuration>

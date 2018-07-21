@@ -50,7 +50,7 @@
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
 
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
+			<a class="navbar-brand" href="mainmenu">HS Golf</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarResponsive" aria-controls="navbarResponsive"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,7 @@
 						<c:when test="${not empty sessionScope.playerInfo }">
 							<li class="nav-item"><a class="nav-link"
 								OnClick="javascript:logout();"> <c:out
-										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
-									연결중
+										value="${sessionScope.playerInfo.locationName} " />연결중
 							</a></li>
 						</c:when>
 						<c:otherwise>
@@ -118,7 +117,8 @@
 
 			<div class="col-lg-3 col-md-6 mb-4">
 				<div class="card">
-					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<a href="lesson"><img class="card-img-top"
+						src="http://placehold.it/500x325" alt=""></a>
 					<div class="card-body">
 						<h4 class="card-title">레슨</h4>
 						<p class="card-text">지형 레벨에 맞추어 연습을 할 수 있습니다. 차곡차곡 난이도를 올려가며
@@ -132,7 +132,8 @@
 
 			<div class="col-lg-3 col-md-6 mb-4">
 				<div class="card">
-					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<a href="fieldselect"><img class="card-img-top"
+						src="http://placehold.it/500x325"></a>
 					<div class="card-body">
 						<h4 class="card-title">필드선택</h4>
 						<p class="card-text">필드를 선택하고 연습을 시작합니다. 전체지형에 대한 정보가 주어지며 다양한
@@ -253,8 +254,8 @@
 	<!-- Footer -->
 	<footer class="py-5 bg-dark">
 		<div class="container">
-			<p class="m-0 text-center text-white">Copyright &copy; Your
-				Website 2018</p>
+			<p class="m-0 text-center text-white">Copyright &copy; Jaeyong
+				Park. Dynamic Putting System 2018</p>
 		</div>
 		<!-- /.container -->
 	</footer>

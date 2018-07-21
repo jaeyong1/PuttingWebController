@@ -15,16 +15,28 @@
 
 
 <!-- Bootstrap core CSS -->
-<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/basicstyle/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Custom styles for this template  -->
-<link href="/css/login.css" rel="stylesheet">
+<link href="css/login.css" rel="stylesheet">
+
 
 </head>
 
 <body oncontextmenu='return false'>
 	<!--  HEADER  -->
 	<script language="javascript">
+		$(function() {
+			//when loading..
+			if ('${popupclosemsg}' != '') {
+				confirm(' ${popupclosemsg} ');
+			}
+
+			window.opener.location.href = '${requestedURL}';
+			window.close();
+
+		});
+
 		function applyFields() {
 			//newuserform		
 			var nm = document.forms["loginform"].elements["user-Id"].value;
@@ -48,10 +60,7 @@
 	</center>
 	<form class="form-signin" name="loginform">
 
-		<h2 class="form-signin-heading">
-
-			<center>HS Golf</center>
-		</h2>
+		<h2 class="form-signin-heading">HS Golf</h2>
 
 
 
@@ -59,8 +68,7 @@
 		<!-- ID -->
 		<label for="exampleInputEmail1">연결할 장치 고유번호</label> <input type="text"
 			id="user-Id" name='user-Id' class="form-control" placeholder="장치번호"
-			required autofocus> <small id="emailHelp"
-			class="form-text text-muted">기기장치의 고유번호를 입력해 주세요</small>
+			required autofocus>
 		<p>
 			<!-- Password -->
 			<label for="exampleInputPassword1">Password</label> <input

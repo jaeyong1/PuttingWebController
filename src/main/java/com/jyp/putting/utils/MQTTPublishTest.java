@@ -12,9 +12,33 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
  * MQTT Publish 테스트
- *
+ * 
  */
 
+/*-
+ * 
+ * 접속 설정 요약
+ * 
+ [Broker서버] tcp://broker.mqttdashboard.com:1883
+ [토픽 prefix] /jyp/rpicontrol/
+ [단말 postfix] 예) rpihome1/명령어      --- DB에 있음
+ 
+ [명령어]
+ startfieldchange - Web에서 '적용하기' 버튼 누름
+ prog0 - Web의 progress바를 0%로 변경
+ prog10 - Web의 progress바를 10%로 변경
+ prog20 - Web의 progress바를 20%로 변경
+ prog30 - Web의 progress바를 30%로 변경
+ prog40 - Web의 progress바를 40%로 변경
+ prog50 - Web의 progress바를 50%로 변경
+ prog60 - Web의 progress바를 60%로 변경
+ prog70 - Web의 progress바를 70%로 변경
+ prog80 - Web의 progress바를 80%로 변경
+ prog90 - Web의 progress바를 90%로 변경
+ prog100 - Web의 progress바를 0%로 변경
+  
+ *  
+ */
 public class MQTTPublishTest {
 	String topic = "/jyp/rpicontrol/";// add rPI ID
 	int qos = 2;

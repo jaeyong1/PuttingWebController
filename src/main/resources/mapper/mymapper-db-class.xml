@@ -5,7 +5,7 @@
 <mapper namespace="topologyMapper">
 
 
-	<!-- DB 쿼리결과 - 클래스 변수명 매칭 테이블 -->
+	<!-- DB 쿼리결과 - 클래스 변수명 - DB컬럼명 매칭 테이블 -->
 	<resultMap id="FieldItemMap" type="com.jyp.putting.domain.FieldItem">
 		<result property="id" column="id" />
 		<result property="ccname" column="ccname" />
@@ -13,4 +13,16 @@
 		<result property="desc" column="desc" />
 		<result property="heightdata" column="heightdata" />
 	</resultMap>
+
+
+	<resultMap id="PlayerItemMap" type="com.jyp.putting.domain.Player">
+		<result property="loginId" column="loginId" />
+		<result property="locationId" column="locationId" />
+		<result property="locationName" column="locationName" />
+		<result property="deviceId" column="deviceId" />
+		<result property="selectedMapId" column="selectedMapId" />
+		<result property="heightData" column="heightdata" />
+		<result property="runState" column="runState" />
+	</resultMap>
+
 </mapper>

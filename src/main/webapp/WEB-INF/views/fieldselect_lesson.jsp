@@ -32,6 +32,10 @@
 <body>
 	<!-- Navigation -->
 	<script>
+		function goBack() {
+			window.history.go(-1);
+		}
+
 		function logout() {
 			var response = confirm("로그아웃 하시겠습니까?")
 			if (response) {
@@ -49,7 +53,7 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
+			<a class="navbar-brand" href="mainmenu">HS Golf</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarResponsive" aria-controls="navbarResponsive"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +75,7 @@
 						<c:when test="${not empty sessionScope.playerInfo }">
 							<li class="nav-item"><a class="nav-link"
 								OnClick="javascript:logout();"> <c:out
-										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
-									연결중
+										value="${sessionScope.playerInfo.locationName} " />연결중
 							</a></li>
 						</c:when>
 						<c:otherwise>
@@ -104,7 +107,8 @@
 			<!-- Project One -->
 			<div class="row">
 				<div class="col-md-7">
-					<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
+					<a href="fieldselect?mapid=${i.id}"> <img
+						class="img-fluid rounded mb-3 mb-md-0"
 						src="mapinfo/${i.id}/700lesson.jpg" alt="">
 					</a>
 				</div>

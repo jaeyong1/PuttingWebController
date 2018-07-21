@@ -57,7 +57,10 @@
 			window.location.href = 'login';
 		}
 	</script>
+
+
 	<!-- Navigation -->
+	<!-- 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="#">Start Bootstrap</a>
@@ -77,7 +80,6 @@
 					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 					</li>
 
-					<!-- 로그인 정보 -->
 					<c:choose>
 						<c:when test="${not empty sessionScope.playerInfo }">
 							<li class="nav-item"><a class="nav-link"
@@ -95,12 +97,12 @@
 
 						</c:otherwise>
 					</c:choose>
-					<!-- ./ 로그인 정보 -->
+					
 				</ul>
 			</div>
 		</div>
 	</nav>
-
+ -->
 	<header>
 		<div id="carouselExampleIndicators" class="carousel slide"
 			data-ride="carousel">
@@ -143,8 +145,11 @@
 
 	<!-- Page Content -->
 	<center>
+		<button type="button" class="btn btn-info btn-lg"
+			OnClick="javascript:goBack();">뒤로가기</button>
 		<button type="button" class="btn btn-info btn-lg" data-toggle="modal"
-			data-target="#myModal">적용하기</button>
+			data-target="#myModal" OnClick="javascript:startfieldchange()">적용하기</button>
+
 	</center>
 
 	<section class="py-5">
@@ -162,32 +167,162 @@
 
 
 	<!-- 모달팝업 시작 -->
-	<!-- Modal -->
+
+	<!-- 모달창 프로그래스바 제어 -->
+	<script>
+		var valeur = 0;
+		$(function() {
+			//when loading..
+			valeur = 0;
+		});
+
+		function progressbar_reset() {
+			valeur = 0;
+			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
+					valeur);
+		}
+		function progressbar_plus10() {
+			valeur = valeur + 10;
+			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
+					valeur);
+
+			if (valeur >= 100) {
+				//$('#myModal').modal('hide');
+
+				window.history.go(0);
+			}
+		}
+
+		function progressbar_force(forcevalue) {
+			valeur = forcevalue;
+			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
+					valeur);
+
+			//적용하기 모달창 종료시
+			$('#myModal').on('hidden.bs.modal', function() {
+				stopfieldchange();
+
+			})
+		}
+	</script>
+	<!-- MQTT 수신 제어 -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"
+		type="text/javascript"></script>
+	<script>
+		// Create a client instance
+		client = new Paho.MQTT.Client("broker.hivemq.com", Number(8000),
+				"clientId");
+		console
+				.log("Topic : /jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/");
+
+		// set callback handlers
+		client.onConnectionLost = onConnectionLost;
+		client.onMessageArrived = onMessageArrived;
+
+		// connect the client
+		client.connect({
+			onSuccess : onConnect
+		});
+
+		// called when the client connects
+		function onConnect() {
+			// Once a connection has been made, make a subscription and send a message.
+			console.log("onConnect");
+			client
+					.subscribe("/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/");
+			message = new Paho.MQTT.Message("Hello");
+			message.destinationName = "/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/";
+			client.send(message);
+		}
+
+		function startfieldchange() {
+			progressbar_reset();
+			message = new Paho.MQTT.Message(
+					"startfieldchange.mapid=${sessionScope.playerInfo.selectedMapId}");
+			message.destinationName = "/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/";
+			client.send(message);
+		}
+
+		function stopfieldchange() {
+			progressbar_reset();
+			message = new Paho.MQTT.Message("stopfieldchange");
+			message.destinationName = "/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/";
+			client.send(message);
+		}
+
+		// called when the client loses its connection
+		function onConnectionLost(responseObject) {
+			if (responseObject.errorCode !== 0) {
+				console.log("onConnectionLost:" + responseObject.errorMessage);
+			}
+		}
+
+		// called when a message arrives
+		function onMessageArrived(message) {
+			console.log("onMessageArrived:" + message.payloadString);
+			if (message.payloadString == 'prog') {
+				progressbar_force(0)
+			} else if (message.payloadString == 'prog00'
+					|| message.payloadString == 'prog0') {
+				progressbar_force(0)
+			} else if (message.payloadString.indexOf('startfieldchange') != -1) {
+				progressbar_force(10)
+			} else if (message.payloadString == 'prog10') {
+				progressbar_force(20)
+			} else if (message.payloadString == 'prog20') {
+				progressbar_force(20)
+			} else if (message.payloadString == 'prog30') {
+				progressbar_force(30)
+			} else if (message.payloadString == 'prog40') {
+				progressbar_force(40)
+			} else if (message.payloadString == 'prog50') {
+				progressbar_force(50)
+			} else if (message.payloadString == 'prog60') {
+				progressbar_force(60)
+			} else if (message.payloadString == 'prog70') {
+				progressbar_force(70)
+			} else if (message.payloadString == 'prog80') {
+				progressbar_force(80)
+			} else if (message.payloadString == 'prog90') {
+				progressbar_force(90)
+			} else if (message.payloadString == 'prog100') {
+				window.history.go(0);
+			} else {
+				console.log("MQTT msg 무시 : " + message.payloadString);
+			}
+		}
+	</script>
+
+
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog">
 
 			<!-- Modal content-->
 			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title"></h4>
-				</div>
+				<!-- 	<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>		</div> -->
 				<div class="modal-body">
-					<p>Some text in the modal.</p>
-					<h2>Animated Progress Bar</h2>
-					<p>The .active class animates the progress bar:</p>
+					<p></p>
+					<h2>필드설정 변경 중</h2>
+					<p></p>
+					<p>잠시만 기다려주세요</p>
+					<p>진행상황:</p>
 					<div class="progress">
 						<div class="progress-bar progress-bar-striped active"
 							role="progressbar" aria-valuenow="40" aria-valuemin="0"
-							aria-valuemax="100" style="width: 40%">40%</div>
+							aria-valuemax="100" style="width: 00%"></div>
 					</div>
 				</div>
+
 
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			</div>
+
+
 		</div>
 
 	</div>
