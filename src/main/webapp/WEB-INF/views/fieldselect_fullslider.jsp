@@ -174,6 +174,13 @@
 		$(function() {
 			//when loading..
 			valeur = 0;
+			
+			//적용하기 모달창 종료시
+			$('#myModal').on('hidden.bs.modal', function() {
+				console.log("modal exit");
+				stopfieldchange();
+
+			})
 		});
 
 		function progressbar_reset() {
@@ -198,11 +205,6 @@
 			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
 					valeur);
 
-			//적용하기 모달창 종료시
-			$('#myModal').on('hidden.bs.modal', function() {
-				stopfieldchange();
-
-			})
 		}
 	</script>
 	<!-- MQTT 수신 제어 -->
