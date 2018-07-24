@@ -74,7 +74,6 @@ public class MQTTMonitor implements MqttCallback {
 	private final String WebSiteURL = "http://localhost:8080/putting/" + "fielddata?mapid=";
 
 	/** 생성자. 시작시 브로커서버에 접속 */
-	// constructor
 	public MQTTMonitor() {
 		super();
 		MQTTConnect();

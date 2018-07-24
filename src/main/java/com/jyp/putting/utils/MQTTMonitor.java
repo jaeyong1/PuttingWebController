@@ -1,24 +1,22 @@
 package com.jyp.putting.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Random;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
-
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.jyp.putting.controller.HomeController;
-
-import java.io.*;
-import java.net.*;
-import java.util.Random;
 
 /**
  * MQTT Subscriber on Web server
@@ -51,18 +49,68 @@ import java.util.Random;
  *  
  */
 public class MQTTMonitor implements MqttCallback {
-	public String deviceId = "monitor";
-	String topic = "/jyp/rpicontrol/";// add rPI ID
+	/** 이 기기고유 ID (=DB에 deviceId) */
+	private String deviceId = "monitor";
 
-	String BROKER_URL = "tcp://broker.mqttdashboard.com:1883";
-	String MQTTclientID = "WEBSERVER_" + deviceId + (new Random().nextInt(100) + 200);
+	/** ================================================================================== */
+
+	/** 브로커서버에서 퍼팅기 프로젝트의 토픽 */
+	private String topic = "/jyp/rpicontrol/";
+
+	/** 브로커서버 주소 */
+	private final String BROKER_URL = "tcp://broker.mqttdashboard.com:1883";
+
+	/** MQTT 클래스 재시작 필요 */
+	private static boolean requestRestartMQTT = false;
+
+	/** 내 클라이언트 ID, 중복시 먼저접속 끊어짐 */
+	private String MQTTclientID = "WEBSERVER_" + deviceId + (new Random().nextInt(100) + 200);
+
+	/** 브로커와 연결을 가지고 있는 객체 */
 	MemoryPersistence persistence = new MemoryPersistence();
 	private MqttClient myClient;
 	private MqttConnectOptions connOpt;
 
+	/** 응답할 토픽 */
 	String myTopic = topic + "rpihome1/"; // for webserver
 
+	/** Spring framework의 로깅기능 */
 	private static final Logger logger = LoggerFactory.getLogger(MQTTMonitor.class);
+
+	/** 생성자. 시작시 브로커서버에 접속 */
+	public MQTTMonitor() {
+		super();
+		MQTTConnect();
+		MQTTSub();
+	}
+
+	/**
+	 * True일 경우, MQTT 클래스가 Exception 발생으로 스스로 복구하지 못하는 상태에 빠진 상태. 외부에서 재시작 필요
+	 * 
+	 * @return 재시작필요여부
+	 */
+	public static boolean isRequestRestartMQTT() {
+		return requestRestartMQTT;
+	}
+
+	/**
+	 * MQTT를 외부에서 재시작 후에 false로 리셋해주어야 함
+	 * 
+	 * @param requestRestartMQTT
+	 */
+	public static void setRequestRestartMQTT(boolean requestRestartMQTT) {
+		MQTTMonitor.requestRestartMQTT = requestRestartMQTT;
+	}
+
+	/** Get - 기기 고유 ID */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/** Set - 기기 고유 ID */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
 
 	// Connect to Broker
 	public void MQTTConnect() {
@@ -76,31 +124,38 @@ public class MQTTMonitor implements MqttCallback {
 			myClient.connect(connOpt);
 		} catch (MqttException e) {
 			e.printStackTrace();
+			requestRestartMQTT = true;
+			System.out.println("[FATAL] MQTTConnect(). set MQTTMoritor restart flag");
 		}
 	}
 
-	public void MQTTSub() {
-		// subscribe to topic if subscriber
+	// Broker와 연결해제. Exception 발생 무시가능.
+	public void MQTTdisconnect() {
 		try {
-			int subQoS = 0;
+			myClient.disconnect();
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// 브로커와 연결여부
+	public boolean MQTTisconnected() {
+		return myClient.isConnected();
+	}
+
+	// Subscribe 하기. 모니터링시작
+	public void MQTTSub() {
+		try {
+			int subQoS = 2;
 			logger.info("Subscribed Topic is " + myTopic);
 			myClient.subscribe(myTopic, subQoS);
 		} catch (Exception e) {
 			e.printStackTrace();
+			requestRestartMQTT = true;
+			System.out.println("[FATAL] MQTTSub(). set MQTTMoritor restart flag");
 		}
 
-	}
-
-	public void runClient() {
-		MQTTConnect();
-		MQTTSub();
-
-	}
-
-	// constructor
-	public MQTTMonitor() {
-		super();
-		runClient();
 	}
 
 	@Override
@@ -140,11 +195,30 @@ public class MQTTMonitor implements MqttCallback {
 		} catch (MalformedURLException e) {
 			logger.info("url To Read is invalid");
 			e.printStackTrace();
+			requestRestartMQTT = true;
+			System.out.println("[FATAL] MalformedURLException. set MQTTMoritor restart flag");
+
 		} catch (IOException e) {
 			logger.info("Internet connection failed");
 			e.printStackTrace();
+			requestRestartMQTT = true;
+			System.out.println("[FATAL] IOException. set MQTTMoritor restart flag");
 		}
 
 		return result.toString();
+	}
+
+	/** 풀밭변경 진행사항 MQTT로 뿌림 */
+	public void MQTTpublish(String content) {
+		int pubqos = 2;
+		MqttMessage message = new MqttMessage(content.getBytes());
+		message.setQos(pubqos);
+		try {
+			myClient.publish(myTopic, message);
+		} catch (MqttException e) {
+			e.printStackTrace();
+			requestRestartMQTT = true;
+			System.out.println("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");
+		}
 	}
 }

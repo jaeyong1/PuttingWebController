@@ -1,7 +1,5 @@
 package com.jyp.putting.controller;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,7 +19,6 @@ import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
 import com.jyp.putting.service.ItemService;
 import com.jyp.putting.utils.MQTTMonitor;
-import com.jyp.putting.utils.MQTTPublishTest;
 
 /**
  * Handles requests for the application home page.
@@ -35,11 +32,38 @@ public class HomeController {
 	@Autowired
 	private ItemService itemService;
 
-	static MQTTMonitor smc = new MQTTMonitor();
+	/** MQTT클래스의 클라이언트 객체 */
+	private static MQTTMonitor mqttclient = null;
+
+	/** MQTT 클라이언트 객체 리턴 */
+	public static MQTTMonitor getMqttclient() {
+		return mqttclient;
+	}
+
+	/** 초기화 함수 */
+	static {
+		// MQTT Fatal 감시 데몬 시작
+		Thread mqttfatalth = new Thread(new MQTTFatalCheckDaemonThread());
+		mqttfatalth.start();
+
+		// MQTT 연결
+		mqttclient = new MQTTMonitor();
+	}
+
+	/**
+	 * MQTT에 Exception 발생시 재시작
+	 */
+	public static void restartMQTT() {
+		logger.info("restartMQTT()");
+		mqttclient.MQTTdisconnect();
+		mqttclient = null;
+		mqttclient = new MQTTMonitor();
+		if (mqttclient.MQTTisconnected() != true) {
+			MQTTMonitor.setRequestRestartMQTT(true);
+		}
+	}
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
-	private FieldItem myitems;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -79,7 +103,6 @@ public class HomeController {
 		}
 		session.setAttribute("popupclosemsg", "");
 		// Login Success
-		new MQTTPublishTest("1", strID);
 		session.setAttribute("playerInfo", player);
 		return "redirect:mainmenu";// viewfieldsGet(locale, model);
 
@@ -159,10 +182,39 @@ public class HomeController {
 			logger.info("Get - fielddata. Raspberrypi access. mapid={}.", mapid);
 		}
 
+		FieldItem myitems;
 		myitems = itemService.queryFieldItems_W_MapId(Integer.parseInt(mapid));
 		if (myitems != null) {
 			return myitems.getHeightdata();
 		}
-		return "10,20,30,40,50,60,70,80,90,80,70,60,50,40,30,20,DUMMY";
+		return "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,DUMMY";
 	}
+}
+
+/**
+ * MQTT클래스에서 Fatal에러가 발생하면 재시작 할수 있도록 스레드 띄움
+ */
+class MQTTFatalCheckDaemonThread implements Runnable {
+	private static final Logger logger = LoggerFactory.getLogger(MQTTFatalCheckDaemonThread.class);
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Thread.sleep(1500); // every 1.5 sec
+
+				if (MQTTMonitor.isRequestRestartMQTT() == true) {
+					logger.info("==================================");
+					logger.info("MQTT Fatal flag is setted. Restart");
+					logger.info("==================================");
+					MQTTMonitor.setRequestRestartMQTT(false);
+					HomeController.restartMQTT();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		} // while
+	}
+
 }
