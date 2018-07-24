@@ -114,7 +114,7 @@
 				</div>
 				<div class="col-md-5">
 					<!-- CC이름 Hole이름 -->
-					<h3>${i.ccname}${i.holename}</h3>
+					<h3>${i.ccname} ${i.holename}</h3>
 					<!-- 난이도별+설명 -->
 					<p>${i.desc}</p>
 					<a class="btn btn-primary" href="fieldselect?mapid=${i.id}">자세히

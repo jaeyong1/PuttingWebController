@@ -174,7 +174,7 @@
 		$(function() {
 			//when loading..
 			valeur = 0;
-			
+
 			//적용하기 모달창 종료시
 			$('#myModal').on('hidden.bs.modal', function() {
 				console.log("modal exit");
@@ -214,7 +214,7 @@
 	<script>
 		// Create a client instance
 		client = new Paho.MQTT.Client("broker.hivemq.com", Number(8000),
-				"clientId");
+				"clientId_${sessionScope.playerInfo.loginId}");
 		console
 				.log("Topic : /jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/");
 
@@ -269,7 +269,7 @@
 					|| message.payloadString == 'prog0') {
 				progressbar_force(0)
 			} else if (message.payloadString.indexOf('startfieldchange') != -1) {
-				progressbar_force(10)
+				progressbar_force(0)
 			} else if (message.payloadString == 'prog10') {
 				progressbar_force(20)
 			} else if (message.payloadString == 'prog20') {

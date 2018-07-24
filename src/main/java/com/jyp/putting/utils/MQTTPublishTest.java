@@ -1,5 +1,7 @@
 package com.jyp.putting.utils;
 
+import java.util.Random;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -40,10 +42,13 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  *  
  */
 public class MQTTPublishTest {
+	public String deviceId = "publisher";
+
 	String topic = "/jyp/rpicontrol/";// add rPI ID
 	int qos = 2;
 	String broker = "tcp://broker.mqttdashboard.com:1883";
-	String clientId = "JavaSample";
+
+	String MQTTclientID = "WEBSERVER_" + deviceId + (new Random().nextInt(100) + 300);
 	MemoryPersistence persistence = new MemoryPersistence();
 
 	public MQTTPublishTest(String rpiId, String contentmsg) {
@@ -51,7 +56,7 @@ public class MQTTPublishTest {
 		try {
 			String content = contentmsg;
 			String topic = this.topic + rpiId;
-			MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
+			MqttClient sampleClient = new MqttClient(broker, MQTTclientID, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			System.out.println("Connecting to broker: " + broker);

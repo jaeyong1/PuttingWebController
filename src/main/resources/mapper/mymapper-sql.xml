@@ -21,6 +21,7 @@
 	<select id="selectItemList" resultMap="FieldItemMap">
 		SELECT *
 		FROM `put_fields`
+		ORDER BY  `put_fields`.`id` ASC 
 		LIMIT 0 , 30
 	</select>
 

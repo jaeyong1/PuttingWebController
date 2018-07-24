@@ -39,6 +39,8 @@ public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+	private FieldItem myitems;
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -143,10 +145,6 @@ public class HomeController {
 		 */
 		logger.info("Get - View Mainmenu {}.", locale);
 
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
 		return "fieldselect_fullslider";// .jpp
 	}
 
@@ -160,6 +158,11 @@ public class HomeController {
 		} else {
 			logger.info("Get - fielddata. Raspberrypi access. mapid={}.", mapid);
 		}
-		return "aabbccdd";
+
+		myitems = itemService.queryFieldItems_W_MapId(Integer.parseInt(mapid));
+		if (myitems != null) {
+			return myitems.getHeightdata();
+		}
+		return "10,20,30,40,50,60,70,80,90,80,70,60,50,40,30,20,DUMMY";
 	}
 }

@@ -18,6 +18,7 @@ import com.jyp.putting.controller.HomeController;
 
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 /**
  * MQTT Subscriber on Web server
@@ -34,6 +35,7 @@ import java.net.*;
  
  [명령어]
  startfieldchange - Web에서 '적용하기' 버튼 누름
+ stopfieldchange - Web에서 적용 취소시킴 
  prog0 - Web의 progress바를 0%로 변경
  prog10 - Web의 progress바를 10%로 변경
  prog20 - Web의 progress바를 20%로 변경
@@ -49,31 +51,35 @@ import java.net.*;
  *  
  */
 public class MQTTMonitor implements MqttCallback {
+	public String deviceId = "monitor";
 	String topic = "/jyp/rpicontrol/";// add rPI ID
-	int qos = 2;
+
 	String BROKER_URL = "tcp://broker.mqttdashboard.com:1883";
-	String clientID = "JavaSample";
+	String MQTTclientID = "WEBSERVER_" + deviceId + (new Random().nextInt(100) + 200);
 	MemoryPersistence persistence = new MemoryPersistence();
 	private MqttClient myClient;
 	private MqttConnectOptions connOpt;
 
+	String myTopic = topic + "rpihome1/"; // for webserver
+
 	private static final Logger logger = LoggerFactory.getLogger(MQTTMonitor.class);
 
-	public void runClient() {
-		// Connect to Broker
+	// Connect to Broker
+	public void MQTTConnect() {
 		try {
+			System.out.println("MQTTConnect()");
 			connOpt = new MqttConnectOptions();
-			myClient = new MqttClient(BROKER_URL, clientID);
+			myClient = new MqttClient(BROKER_URL, MQTTclientID);
 			myClient.setCallback(this);
+			// setup topic
+			logger.info("Connected to " + BROKER_URL);
 			myClient.connect(connOpt);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
+	}
 
-		// setup topic
-		logger.info("Connected to " + BROKER_URL);
-		String myTopic = topic + "rpihome1/";
-
+	public void MQTTSub() {
 		// subscribe to topic if subscriber
 		try {
 			int subQoS = 0;
@@ -82,6 +88,12 @@ public class MQTTMonitor implements MqttCallback {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	public void runClient() {
+		MQTTConnect();
+		MQTTSub();
 
 	}
 
@@ -94,7 +106,8 @@ public class MQTTMonitor implements MqttCallback {
 	@Override
 	public void connectionLost(Throwable t) {
 		logger.info("MQTT Connection Lost");
-
+		MQTTConnect();
+		MQTTSub();
 	}
 
 	@Override
@@ -107,7 +120,7 @@ public class MQTTMonitor implements MqttCallback {
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		logger.info("MQTT messageArrived. topic:" + topic + ", message:" + message);
 		System.out.println("---------------------------------------");
-		System.out.println(getFieldData("http://localhost:8080/putting/fielddata?mapid=1"));		
+		System.out.println(getFieldData("http://localhost:8080/putting/fielddata?mapid=1"));
 		System.out.println("---------------------------------------");
 	}
 
