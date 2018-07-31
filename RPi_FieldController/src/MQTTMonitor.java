@@ -71,7 +71,7 @@ public class MQTTMonitor implements MqttCallback {
 	String myTopic = topic + deviceId + "/";
 
 	/** 웹DB map정보 쿼리 URL */
-	private final String WebSiteURL = "http://localhost:8080/putting/" + "fielddata?mapid=";
+	private final String WebSiteURL = "http://192.168.0.50:8080/putting/" + "fielddata?mapid=";
 
 	/** 생성자. 시작시 브로커서버에 접속 */
 	public MQTTMonitor() {
