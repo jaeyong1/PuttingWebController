@@ -74,6 +74,9 @@ public class MQTTMonitor implements MqttCallback {
 	/** 응답할 토픽 */
 	String myTopic = topic + "rpihome1/"; // for webserver
 
+	/** 웹DB map정보 쿼리 URL */
+	private final String WebSiteURL = "http://localhost:8080/putting/" + "fielddata?mapid=";
+
 	/** Spring framework의 로깅기능 */
 	private static final Logger logger = LoggerFactory.getLogger(MQTTMonitor.class);
 
@@ -173,10 +176,28 @@ public class MQTTMonitor implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		logger.info("---------------------------------------");
 		logger.info("MQTT messageArrived. topic:" + topic + ", message:" + message);
-		System.out.println("---------------------------------------");
-		System.out.println(getFieldData("http://localhost:8080/putting/fielddata?mapid=1"));
-		System.out.println("---------------------------------------");
+
+		// 풀밭변경 시작 명령어 수신
+		if (message.toString().startsWith("startfieldchange")) {
+			int startlen = "startfieldchange.mapid=".length();
+			String strMapId = message.toString().substring(startlen);
+			System.out.println("Get Field Data from DB server. Map ID = " + strMapId);
+
+			// Read raw data from DB
+			String rawDBData = getFieldData(WebSiteURL + strMapId);
+
+			logger.info("WebDB mapid=" + strMapId + ", height info : " + rawDBData);
+
+		}
+
+		// 풀밭변경 멈추기 명령어 수신
+		if (message.toString().startsWith("stopfieldchange")) {
+			logger.info("stopfieldchange");
+		}
+
+		logger.info("---------------------------------------//");
 	}
 
 	public String getFieldData(String urlToRead) {

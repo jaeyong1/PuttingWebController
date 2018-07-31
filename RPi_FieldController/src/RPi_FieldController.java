@@ -156,8 +156,8 @@ class ExternalGPIOControl implements Runnable {
 
 					break;
 				case 8:
-					System.out.println(" - set external Height device 2 " + tokens[14]);
-					System.out.println(" - set external Height device 2 " + tokens[15]);
+					System.out.println(" - set external Height device 15 " + tokens[14]);
+					System.out.println(" - set external Height device 16 " + tokens[15]);
 
 					break;
 				case 9:

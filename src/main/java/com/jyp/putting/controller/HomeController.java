@@ -46,7 +46,7 @@ public class HomeController {
 		Thread mqttfatalth = new Thread(new MQTTFatalCheckDaemonThread());
 		mqttfatalth.start();
 
-		// MQTT 연결
+		// MQTT Broker 서버연결
 		mqttclient = new MQTTMonitor();
 	}
 
@@ -65,9 +65,6 @@ public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 
@@ -104,7 +101,7 @@ public class HomeController {
 		session.setAttribute("popupclosemsg", "");
 		// Login Success
 		session.setAttribute("playerInfo", player);
-		return "redirect:mainmenu";// viewfieldsGet(locale, model);
+		return "redirect:mainmenu";
 
 	}
 
