@@ -3,6 +3,10 @@ package com.jyp.rpi.util;
 public class SystemInfo {
 	private static String OS = System.getProperty("os.name").toLowerCase();
 
+	public static String getOSString() {
+		return OS;
+	}
+
 	public static boolean isWindows() {
 		return (OS.indexOf("win") >= 0);
 	}
