@@ -1,7 +1,11 @@
+package com.jyp.rpi;
+
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import org.python.util.PythonInterpreter;
+
+import com.jyp.rpi.util.SystemInfo;
 
 public class RPi_FieldController {
 
@@ -80,6 +84,11 @@ public class RPi_FieldController {
 
 		// MQTT 연결
 		mqttclient = new MQTTMonitor();
+
+		// 시스템 OS 확인
+		System.out.println("isWindows : " + SystemInfo.isWindows());
+		System.out.println("isUnix : " + SystemInfo.isUnix());
+
 	}
 
 }

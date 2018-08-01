@@ -24,6 +24,8 @@ echo "-----------------------------"
 echo "  Packaging JAR (release/)"
 echo "-----------------------------"
 echo $(cp lib/org.eclipse.paho.client.mqttv3_1.1.0.jar release/)
+echo $(cp lib/jython-standalone-2.7.0.jar release/)
+echo $(cp src/*.py release/)
 echo $(jar cvfm release/RPi_FieldController.jar Manifest.txt -C bin/ .)
 echo ""
 echo ""
@@ -31,5 +33,5 @@ echo "-----------------------------"
 echo "  RUN (release/)"
 echo "-----------------------------"
 echo "To run.."
-echo "java -cp org.eclipse.paho.client.mqttv3_1.1.0.jar:jython-standalone-2.7.0.jar:RPi_FieldController.jar RPi_FieldController"
+echo "java -cp org.eclipse.paho.client.mqttv3_1.1.0.jar:jython-standalone-2.7.0.jar:RPi_FieldController.jar com.jyp.rpi.RPi_FieldController"
 echo ""
