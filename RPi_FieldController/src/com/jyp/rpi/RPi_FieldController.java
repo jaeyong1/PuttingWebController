@@ -76,7 +76,20 @@ public class RPi_FieldController {
 
 	public static ExternalCtrl getExtenalCtrlInstance() {
 		if (exctrl == null) {
-			System.out.println("External Control Object is NULL !!!!!");
+			System.out.println("Check OS....");
+			// 시스템별 외부제어 객체 구분
+			if (SystemInfo.isWindows()) {
+				System.out.println("- Windows System(for dev)");
+				exctrl = ExternalCtrlDummy.getInstance();
+
+			} else if (SystemInfo.isUnix()) {
+				System.out.println("- Linux System(Raspberry Pi)");
+				exctrl = ExternalCtrlRpi.getInstance();
+
+			} else {
+				System.out.println("Unkwon System OS : " + SystemInfo.getOSString());
+			}
+
 		}
 		return exctrl;
 	}
@@ -85,9 +98,9 @@ public class RPi_FieldController {
 
 		try {
 			DatagramSocket isRun = new DatagramSocket(1103);
-			System.out.println("First run. Keep this Processor");
+			System.out.println("[main] First run. Keep this Processor");
 		} catch (SocketException e) {
-			System.out.println("Duplicated run. Exit Program");
+			System.out.println("[main] Duplicated run. Exit Program");
 		}
 
 		// MQTT Fatal 감시 데몬 시작
@@ -98,22 +111,14 @@ public class RPi_FieldController {
 		mqttclient = new MQTTMonitor();
 
 		// 시스템 OS 확인
-		System.out.println("isWindows : " + SystemInfo.isWindows());
-		System.out.println("isUnix : " + SystemInfo.isUnix());
+		System.out.println("[main] isWindows : " + SystemInfo.isWindows());
+		System.out.println("[main] isUnix : " + SystemInfo.isUnix());
 
-		// 시스템별 외부제어 객체 구분
-		if (SystemInfo.isWindows()) {
-			exctrl = new ExternalCtrlDummy();
-			exctrl.InitExternalDevice();
+		// Python code 연결 및 GPIO 구동준비
+		getExtenalCtrlInstance().InitExternalDevice();
 
-		} else if (SystemInfo.isUnix()) {
-			exctrl = new ExternalCtrlRpi();
-			exctrl.InitExternalDevice();
-
-		} else {
-			System.out.println("Unkwon System OS : " + SystemInfo.getOSString());
-		}
-
+		// Boot_Done PIN high
+		getExtenalCtrlInstance().setBootDoneLedOn();
 	}
 
 }
@@ -127,20 +132,22 @@ class ExternalGPIOControlThread implements Runnable {
 	public void run() {
 		int index = 0;
 
+		RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_CHANGING_FIELD_VALUE);
+
 		// 웹 DB 문자열 (xx,yy,zz) --> 문자열 배열로 파싱
 		String rawdata = RPi_FieldController.getStrRawFieldStringData();
 		String[] tokens = rawdata.split(",");
 
 		for (index = 0; index < 11; index++) { // index 0 ~ 10 (11 step)
 			if (RPi_FieldController.isFieldchangingkeepgoing() == false) {
-				System.out.println("ExternalGPIOControl - Stop");
+				System.out.println("[Thread] ExternalGPIOControl - Stop");
 				index = Integer.MAX_VALUE;
 				return;
 			}
 
 			// 예외처리
 			if (rawdata == "" || tokens == null || tokens.length < 16) {
-				System.out.println("ExternalGPIOControl - raw data is blank");
+				System.out.println("[Thread] ExternalGPIOControl - raw data is blank");
 				index = Integer.MAX_VALUE;
 				return;
 			}
@@ -157,34 +164,34 @@ class ExternalGPIOControlThread implements Runnable {
 				case 0:
 					break;
 				case 1:
-					System.out.println(" - set external Height device 1 " + tokens[0]);
+					System.out.println("[Thread] - set external Height device 1 " + tokens[0]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(0, Integer.parseInt(tokens[0]));
-					System.out.println(" - set external Height device 2 " + tokens[1]);
+					System.out.println("[Thread] - set external Height device 2 " + tokens[1]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(1, Integer.parseInt(tokens[1]));
 
 					break;
 				case 2:
-					System.out.println(" - set external Height device 3 " + tokens[2]);
+					System.out.println("[Thread] - set external Height device 3 " + tokens[2]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(2, Integer.parseInt(tokens[2]));
-					System.out.println(" - set external Height device 4 " + tokens[3]);
+					System.out.println("[Thread] - set external Height device 4 " + tokens[3]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(3, Integer.parseInt(tokens[3]));
 					break;
 				case 3:
-					System.out.println(" - set external Height device 5 " + tokens[4]);
+					System.out.println("[Thread] - set external Height device 5 " + tokens[4]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(4, Integer.parseInt(tokens[4]));
-					System.out.println(" - set external Height device 6 " + tokens[5]);
+					System.out.println("[Thread] - set external Height device 6 " + tokens[5]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(5, Integer.parseInt(tokens[5]));
 
 					break;
 				case 4:
-					System.out.println(" - set external Height device 7 " + tokens[6]);
+					System.out.println("[Thread] - set external Height device 7 " + tokens[6]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(6, Integer.parseInt(tokens[6]));
-					System.out.println(" - set external Height device 8 " + tokens[7]);
+					System.out.println("[Thread] - set external Height device 8 " + tokens[7]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(7, Integer.parseInt(tokens[7]));
 
 					break;
 				case 5:
-					System.out.println(" - set external Height device 9 " + tokens[8]);
+					System.out.println("[Thread] - set external Height device 9 " + tokens[8]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(8, Integer.parseInt(tokens[8]));
 					System.out.println(" - set external Height device 10 " + tokens[9]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(9, Integer.parseInt(tokens[9]));
@@ -192,25 +199,25 @@ class ExternalGPIOControlThread implements Runnable {
 					break;
 
 				case 6:
-					System.out.println(" - set external Height device 11 " + tokens[10]);
+					System.out.println("[Thread] - set external Height device 11 " + tokens[10]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(10, Integer.parseInt(tokens[10]));
-					System.out.println(" - set external Height device 12 " + tokens[11]);
+					System.out.println("[Thread] - set external Height device 12 " + tokens[11]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(11, Integer.parseInt(tokens[11]));
 
 					break;
 				case 7:
-					System.out.println(" - set external Height device 13 " + tokens[12]);
+					System.out.println("[Thread] - set external Height device 13 " + tokens[12]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(12, Integer.parseInt(tokens[12]));
-					System.out.println(" - set external Height device 14 " + tokens[13]);
+					System.out.println("[Thread] - set external Height device 14 " + tokens[13]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(13, Integer.parseInt(tokens[13]));
 
 					break;
 				case 8:
-					System.out.println(" - set external Height device 15 " + tokens[14]);
+					System.out.println("[Thread] - set external Height device 15 " + tokens[14]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(14, Integer.parseInt(tokens[14]));
-					System.out.println(" - set external Height device 16 " + tokens[15]);
+					System.out.println("[Thread] - set external Height device 16 " + tokens[15]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(15, Integer.parseInt(tokens[15]));
-
+					RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_NORMAL_OPERATION);
 					break;
 				case 9:
 					break;
@@ -225,7 +232,7 @@ class ExternalGPIOControlThread implements Runnable {
 				e.printStackTrace();
 			}
 		} // for
-		System.out.println("ExternalGPIOControl - finish");
+		System.out.println("[Thread] ExternalGPIOControl - finish");
 
 	}
 

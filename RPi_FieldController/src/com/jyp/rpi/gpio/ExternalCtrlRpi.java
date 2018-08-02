@@ -6,11 +6,20 @@ import org.python.util.PythonInterpreter;
 
 public class ExternalCtrlRpi implements ExternalCtrl {
 
-	private PyObject buildingClass;
 	private PythonInterpreter interpreter;
+	private PyObject buildingClass;
 	private ExternalCtrl building;
 
-	public ExternalCtrlRpi() {
+	static private ExternalCtrlRpi instance = null;
+
+	public static synchronized ExternalCtrlRpi getInstance() {
+		if (instance == null) {
+			instance = new ExternalCtrlRpi();
+		}
+		return instance;
+	}
+
+	private ExternalCtrlRpi() {
 		// find .py file and load class
 		interpreter = new PythonInterpreter();
 		interpreter.exec("from PuttingI2C import PuttingI2C");
@@ -47,9 +56,21 @@ public class ExternalCtrlRpi implements ExternalCtrl {
 	}
 
 	@Override
-	public boolean isNoProblem() {
+	public boolean isError() {
 		System.out.println("[Rpi] isNoProblem. ");
 		return true;
+	}
+
+	@Override
+	public void setBootDoneLedOn() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setBootDoneLedOff() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

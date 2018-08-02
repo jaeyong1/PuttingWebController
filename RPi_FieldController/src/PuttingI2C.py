@@ -17,6 +17,12 @@ class PuttingI2C(ExternalCtrl):
         print("[python] setStateLED")
         return 0
     
-    def isNoProblem(self):
+    def isError(self):
         print("[python] isNoProblem")
-        return False 
+        return False
+    
+    def setBootDoneLedOn(self):
+        return
+    
+    def setBootDoneLedOff(self):
+        return

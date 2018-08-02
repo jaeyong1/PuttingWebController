@@ -15,6 +15,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import com.jyp.rpi.gpio.ExternalCtrl;
+
 /**
  * MQTT Subscriber on Web server
  * 
@@ -96,7 +98,13 @@ public class MQTTMonitor implements MqttCallback {
 	 * @param requestRestartMQTT
 	 */
 	public static void setRequestRestartMQTT(boolean requestRestartMQTT) {
+		if (requestRestartMQTT == true) {
+			RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_INTERNET_CONNECTION_ERROR);
+		} else {
+			RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_NORMAL_OPERATION);
+		}
 		MQTTMonitor.requestRestartMQTT = requestRestartMQTT;
+
 	}
 
 	/** Get - 기기 고유 ID */
@@ -120,7 +128,7 @@ public class MQTTMonitor implements MqttCallback {
 			myClient.connect(connOpt);
 		} catch (MqttException e) {
 			e.printStackTrace();
-			requestRestartMQTT = true;
+			setRequestRestartMQTT(true);
 			System.out.println("[FATAL] MQTTConnect(). set MQTTMoritor restart flag");
 		}
 	}
@@ -148,7 +156,7 @@ public class MQTTMonitor implements MqttCallback {
 			myClient.subscribe(myTopic, subQoS);
 		} catch (Exception e) {
 			e.printStackTrace();
-			requestRestartMQTT = true;
+			setRequestRestartMQTT(true);
 			System.out.println("[FATAL] MQTTSub(). set MQTTMoritor restart flag");
 		}
 
@@ -214,13 +222,13 @@ public class MQTTMonitor implements MqttCallback {
 			System.out.println("url To Read is invalid");
 			e.printStackTrace();
 
-			requestRestartMQTT = true;
+			setRequestRestartMQTT(true);
 			System.out.println("[FATAL] MalformedURLException. set MQTTMoritor restart flag");
 		} catch (IOException e) {
 			System.out.println("[FATAL] IOException. Internet connection failed");
 			e.printStackTrace();
 
-			requestRestartMQTT = true;
+			setRequestRestartMQTT(true);
 			System.out.println("[FATAL] IOException. set MQTTMoritor restart flag");
 		}
 
@@ -236,7 +244,7 @@ public class MQTTMonitor implements MqttCallback {
 			myClient.publish(myTopic, message);
 		} catch (MqttException e) {
 			e.printStackTrace();
-			requestRestartMQTT = true;
+			setRequestRestartMQTT(true);
 			System.out.println("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");
 		}
 	}
