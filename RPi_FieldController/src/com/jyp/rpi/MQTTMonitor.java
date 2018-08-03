@@ -15,7 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import com.jyp.rpi.gpio.ExternalCtrl;
+import com.jyp.rpi.gpio.IExternalCtrl;
 
 /**
  * MQTT Subscriber on Web server
@@ -99,9 +99,9 @@ public class MQTTMonitor implements MqttCallback {
 	 */
 	public static void setRequestRestartMQTT(boolean requestRestartMQTT) {
 		if (requestRestartMQTT == true) {
-			RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_INTERNET_CONNECTION_ERROR);
+			RPi_FieldController.getExtenalCtrlInstance().setStateLED(IExternalCtrl.STATE_INTERNET_CONNECTION_ERROR);
 		} else {
-			RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_NORMAL_OPERATION);
+			RPi_FieldController.getExtenalCtrlInstance().setStateLED(IExternalCtrl.STATE_NORMAL_OPERATION);
 		}
 		MQTTMonitor.requestRestartMQTT = requestRestartMQTT;
 

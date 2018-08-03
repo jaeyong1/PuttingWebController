@@ -1,8 +1,8 @@
 from com.jyp.rpi.gpio import IExternalCtrl
 
-class PuttingDummy(IExternalCtrl):
+class PuttingRpi(IExternalCtrl):
     def __init__(self):
-        print("[python] PuttingDummy constructor")
+        print("[python] PuttingRpi constructor")
 
     def InitExternalDevice(self):
         print("[python] InitExternalDevice")

@@ -3,36 +3,49 @@ package com.jyp.rpi.gpio;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
-public class ExternalCtrlDummy implements ExternalCtrl {
+public class ExternalCtrlImpl implements IExternalCtrl {
 
 	// to connect with python
 	private PythonInterpreter interpreter;
 	private PyObject pyputtingClass;
-	private ExternalCtrl pyputtingInstance;
+	private IExternalCtrl pyputtingInstance;
 
 	// to state led thread
 	Thread stateledthr = null;
 
-	static private int stateledcnt = ExternalCtrl.STATE_NORMAL_OPERATION;
+	static private int stateledcnt = IExternalCtrl.STATE_NORMAL_OPERATION;
 
 	// to singleton
-	static private ExternalCtrlDummy instance = null;
+	static private ExternalCtrlImpl instance = null;
 
-	public static synchronized ExternalCtrlDummy getInstance() {
+	// dummy .py loading
+	static private boolean isDummyMode = false;
+
+	public static void setDummyMode(boolean isDummyMode) {
+		System.out.println("will load dummy .py file");
+		ExternalCtrlImpl.isDummyMode = isDummyMode;
+		instance = null; // setting change -> reload object
+	}
+
+	public static synchronized ExternalCtrlImpl getInstance() {
 		if (instance == null) {
-			instance = new ExternalCtrlDummy();
-
+			instance = new ExternalCtrlImpl();
 		}
 		return instance;
 	}
 
 	// constructor
-	private ExternalCtrlDummy() {
+	private ExternalCtrlImpl() {
 		// find .py file and load class
 		interpreter = new PythonInterpreter();
-		interpreter.exec("from PuttingDummy import PuttingDummy");
-		pyputtingClass = interpreter.get("PuttingDummy");
-		pyputtingInstance = (ExternalCtrl) create();
+		if (isDummyMode) {
+			interpreter.exec("from PuttingDummy import PuttingDummy");
+			pyputtingClass = interpreter.get("PuttingDummy");
+		} else {
+			interpreter.exec("from PuttingRpi import PuttingRpi");
+			pyputtingClass = interpreter.get("PuttingRpi");
+		}
+		pyputtingInstance = (IExternalCtrl) create();
 
 		// Daemon thread to control State Led
 		stateledthr = new Thread(new stateLedThread());
@@ -43,16 +56,16 @@ public class ExternalCtrlDummy implements ExternalCtrl {
 	}
 
 	// internal usage
-	private ExternalCtrl create() {
+	private IExternalCtrl create() {
 		// get instance from .py
 		PyObject buildingObject = pyputtingClass.__call__();
-		return (ExternalCtrl) buildingObject.__tojava__(ExternalCtrl.class);
+		return (IExternalCtrl) buildingObject.__tojava__(IExternalCtrl.class);
 	}
 
 	@Override
 	public int InitExternalDevice() {
 		System.out.println("* [Dummy] Init");
-		pyputtingInstance.InitExternalDevice();
+		getPyputtingInstance().InitExternalDevice();
 		return 0;
 	}
 
@@ -66,14 +79,17 @@ public class ExternalCtrlDummy implements ExternalCtrl {
 	@Override
 	public int setStateLED(int state) {
 		System.out.println("* [Dummy] setStateLED. state:" + state);
+		// set global variable
 		stateledcnt = state;
 		return 0;
 	}
 
 	@Override
 	public boolean isError() {
-		System.out.println("* [Dummy] isError. ");
-		return true;
+		System.out.println("* [Dummy] isError? ");
+		boolean r = getPyputtingInstance().isError();
+		System.out.println("* [Dummy] isError=" + r);
+		return r;
 	}
 
 	@Override
@@ -94,12 +110,16 @@ public class ExternalCtrlDummy implements ExternalCtrl {
 		return stateledcnt;
 	}
 
-	protected ExternalCtrl getPyputtingInstance() {
+	protected IExternalCtrl getPyputtingInstance() {
 		return pyputtingInstance;
 	}
 
 }
 
+/**
+ * Thread for repeating on and off
+ * 
+ */
 class stateLedThread implements Runnable {
 
 	@Override
@@ -108,22 +128,19 @@ class stateLedThread implements Runnable {
 		int i = 0;
 		while (true) {
 			try {
-				for (i = 0; i < ExternalCtrlDummy.getStateledcnt(); i++) {
+				for (i = 0; i < ExternalCtrlImpl.getStateledcnt(); i++) {
 					// State GPIO High
-					// System.out.print("@");
-					ExternalCtrlDummy.getInstance().getPyputtingInstance().setStateLED(1);
+					ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(1);
 
 					Thread.sleep(180);
 
 					// State GPIO Low
-					// System.out.print(".");
-					ExternalCtrlDummy.getInstance().getPyputtingInstance().setStateLED(0);
+					ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(0);
 					Thread.sleep(180);
 				}
 
 				// State GPIO Low
-				// System.out.print("...");
-				ExternalCtrlDummy.getInstance().getPyputtingInstance().setStateLED(0);
+				ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(0);
 				Thread.sleep(1200);
 
 			} catch (InterruptedException e) {

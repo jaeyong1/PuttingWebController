@@ -5,9 +5,8 @@ import java.net.SocketException;
 
 import org.python.util.PythonInterpreter;
 
-import com.jyp.rpi.gpio.ExternalCtrl;
-import com.jyp.rpi.gpio.ExternalCtrlDummy;
-import com.jyp.rpi.gpio.ExternalCtrlRpi;
+import com.jyp.rpi.gpio.IExternalCtrl;
+import com.jyp.rpi.gpio.ExternalCtrlImpl;
 import com.jyp.rpi.util.SystemInfo;
 
 public class RPi_FieldController {
@@ -51,7 +50,7 @@ public class RPi_FieldController {
 	/** 풀밭변경 시작 */
 	public static void startExternalFieldChanging() {
 		System.out.println("startExternalFieldChanging() - new Thread");
-		Thread thrfieldchange = new Thread(new ExternalGPIOControlThread());
+		Thread thrfieldchange = new Thread(new FieldChangeThread());
 		setFieldchangingkeepgoing(true);
 		thrfieldchange.start();
 	}
@@ -72,19 +71,20 @@ public class RPi_FieldController {
 		RPi_FieldController.strRawFieldStringData = strRawFieldStringData;
 	}
 
-	static private ExternalCtrl exctrl = null;
+	static private IExternalCtrl exctrl = null;
 
-	public static ExternalCtrl getExtenalCtrlInstance() {
+	public static IExternalCtrl getExtenalCtrlInstance() {
 		if (exctrl == null) {
 			System.out.println("Check OS....");
 			// 시스템별 외부제어 객체 구분
 			if (SystemInfo.isWindows()) {
 				System.out.println("- Windows System(for dev)");
-				exctrl = ExternalCtrlDummy.getInstance();
+				ExternalCtrlImpl.setDummyMode(true);
+				exctrl = ExternalCtrlImpl.getInstance();
 
 			} else if (SystemInfo.isUnix()) {
 				System.out.println("- Linux System(Raspberry Pi)");
-				exctrl = ExternalCtrlRpi.getInstance();
+				exctrl = ExternalCtrlImpl.getInstance();
 
 			} else {
 				System.out.println("Unkwon System OS : " + SystemInfo.getOSString());
@@ -126,13 +126,13 @@ public class RPi_FieldController {
 /**
  * 외부장치 제어 스레드
  */
-class ExternalGPIOControlThread implements Runnable {
+class FieldChangeThread implements Runnable {
 
 	@Override
 	public void run() {
 		int index = 0;
 
-		RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_CHANGING_FIELD_VALUE);
+		RPi_FieldController.getExtenalCtrlInstance().setStateLED(IExternalCtrl.STATE_CHANGING_FIELD_VALUE);
 
 		// 웹 DB 문자열 (xx,yy,zz) --> 문자열 배열로 파싱
 		String rawdata = RPi_FieldController.getStrRawFieldStringData();
@@ -217,7 +217,7 @@ class ExternalGPIOControlThread implements Runnable {
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(14, Integer.parseInt(tokens[14]));
 					System.out.println("[Thread] - set external Height device 16 " + tokens[15]);
 					RPi_FieldController.getExtenalCtrlInstance().setMotorValue(15, Integer.parseInt(tokens[15]));
-					RPi_FieldController.getExtenalCtrlInstance().setStateLED(ExternalCtrl.STATE_NORMAL_OPERATION);
+					RPi_FieldController.getExtenalCtrlInstance().setStateLED(IExternalCtrl.STATE_NORMAL_OPERATION);
 					break;
 				case 9:
 					break;

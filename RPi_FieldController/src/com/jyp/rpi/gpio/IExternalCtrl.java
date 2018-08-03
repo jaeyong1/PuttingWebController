@@ -1,6 +1,6 @@
 package com.jyp.rpi.gpio;
 
-public interface ExternalCtrl {
+public interface IExternalCtrl {
 	public static final int STATE_NORMAL_OPERATION = 1;
 	public static final int STATE_CHANGING_FIELD_VALUE = 2;
 	public static final int STATE_INTERNET_CONNECTION_ERROR = 3;
