@@ -25,6 +25,7 @@ echo "  Packaging JAR (release/)"
 echo "-----------------------------"
 echo $(cp lib/org.eclipse.paho.client.mqttv3_1.1.0.jar release/)
 echo $(cp lib/jython-standalone-2.7.0.jar release/)
+echo $(cp lib/json-simple-1.1.jar release/)
 echo $(cp src/*.py release/)
 echo $(jar cvfm release/RPi_FieldController.jar Manifest.txt -C bin/ .)
 echo ""
