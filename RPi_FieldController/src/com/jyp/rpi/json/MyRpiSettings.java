@@ -48,18 +48,19 @@ public class MyRpiSettings {
 	}
 
 	private static void readJsonFile() {
-		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Current relative path is: " + s);
 
-		System.out.println("Read JSON File(putting.conf)");
+		String curpath = SaveMyRpiSettings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String jsonfilepath = curpath + "putting.conf";
+		System.out.println("Read JSON File - " + jsonfilepath);
+
 		JSONParser parser = new JSONParser();
 		try {
-			Object obj = parser.parse(new FileReader("putting.conf"));
+			Object obj = parser.parse(new FileReader(jsonfilepath));
 			JSONObject jsonObject = (JSONObject) obj;
 			myDeviceId = (String) jsonObject.get(".myDeviceId");
 			mqttBrokerServer = (String) jsonObject.get("mqttBrokerServer");
 			webServer = (String) jsonObject.get("webServer");
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

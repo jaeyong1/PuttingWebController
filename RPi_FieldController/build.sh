@@ -36,3 +36,7 @@ echo "-----------------------------"
 echo "To run.."
 echo "java -cp org.eclipse.paho.client.mqttv3_1.1.0.jar:jython-standalone-2.7.0.jar:RPi_FieldController.jar:json-simple-1.1.jar:. com.jyp.rpi.RPi_FieldController"
 echo ""
+echo ""
+echo $(cd release/;java -cp RPi_FieldController.jar:json-simple-1.1.jar:. com.jyp.rpi.json.SaveMyRpiSettings)
+echo ""
+
