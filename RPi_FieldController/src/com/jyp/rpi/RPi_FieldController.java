@@ -1,12 +1,13 @@
 package com.jyp.rpi;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.SocketException;
 
-import org.python.util.PythonInterpreter;
-
-import com.jyp.rpi.gpio.IExternalCtrl;
 import com.jyp.rpi.gpio.ExternalCtrlImpl;
+import com.jyp.rpi.gpio.IExternalCtrl;
 import com.jyp.rpi.util.SystemInfo;
 
 public class RPi_FieldController {
@@ -34,6 +35,9 @@ public class RPi_FieldController {
 
 	/** 웹DB에서 받은 풀밭 높이데이터 */
 	private static String strRawFieldStringData = "";
+
+	/** 앱 중복실행방지용 */
+	private static ServerSocket onlyOncInstanceSocket;
 
 	/**
 	 * MQTT에 Exception 발생시 재시작
@@ -95,14 +99,14 @@ public class RPi_FieldController {
 	}
 
 	public static void main(String[] args) {
-
 		try {
-			DatagramSocket isRun = new DatagramSocket(1103);
+			onlyOncInstanceSocket = new ServerSocket(65535, 1, InetAddress.getLocalHost());
 			System.out.println("[main] First run. Keep this Processor");
-		} catch (SocketException e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			System.out.println("[main] Duplicated run. Exit Program");
+			return;
 		}
-
 		// MQTT Fatal 감시 데몬 시작
 		Thread mqttfatalth = new Thread(new MQTTFatalCheckDaemonThread());
 		mqttfatalth.start();

@@ -13,6 +13,7 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 	// to state led thread
 	Thread stateledthr = null;
 
+	// default value of state led
 	static private int stateledcnt = IExternalCtrl.STATE_NORMAL_OPERATION;
 
 	// to singleton
@@ -21,12 +22,6 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 	// dummy .py loading
 	static private boolean isDummyMode = false;
 
-	public static void setDummyMode(boolean isDummyMode) {
-		System.out.println("will load dummy .py file");
-		ExternalCtrlImpl.isDummyMode = isDummyMode;
-		instance = null; // setting change -> reload object
-	}
-
 	public static synchronized ExternalCtrlImpl getInstance() {
 		if (instance == null) {
 			instance = new ExternalCtrlImpl();
@@ -34,14 +29,21 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 		return instance;
 	}
 
+	public static void setDummyMode(boolean isDummyMode) {
+		ExternalCtrlImpl.isDummyMode = isDummyMode;
+		instance = null; // setting change -> reload object
+	}
+
 	// constructor
 	private ExternalCtrlImpl() {
 		// find .py file and load class
 		interpreter = new PythonInterpreter();
 		if (isDummyMode) {
+			System.out.println("load PuttingDummy.py ...");
 			interpreter.exec("from PuttingDummy import PuttingDummy");
 			pyputtingClass = interpreter.get("PuttingDummy");
 		} else {
+			System.out.println("load PuttingRpi.py ...");
 			interpreter.exec("from PuttingRpi import PuttingRpi");
 			pyputtingClass = interpreter.get("PuttingRpi");
 		}
