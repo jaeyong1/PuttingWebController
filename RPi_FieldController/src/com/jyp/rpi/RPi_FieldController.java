@@ -103,7 +103,6 @@ public class RPi_FieldController {
 			onlyOncInstanceSocket = new ServerSocket(65535, 1, InetAddress.getLocalHost());
 			System.out.println("[main] First run. Keep this Processor");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("[main] Duplicated run. Exit Program");
 			return;
 		}

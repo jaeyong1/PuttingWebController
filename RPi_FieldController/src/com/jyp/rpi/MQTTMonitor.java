@@ -16,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import com.jyp.rpi.gpio.IExternalCtrl;
+import com.jyp.rpi.json.MyRpiSettings;
 
 /**
  * MQTT Subscriber on Web server
@@ -50,7 +51,7 @@ import com.jyp.rpi.gpio.IExternalCtrl;
  */
 public class MQTTMonitor implements MqttCallback {
 	/** 이 기기고유 ID (=DB에 deviceId) */
-	private String deviceId = "rpihome1";
+	private String deviceId = MyRpiSettings.getMyDeviceId();
 
 	/** ================================================================================== */
 
@@ -58,7 +59,7 @@ public class MQTTMonitor implements MqttCallback {
 	private String topic = "/jyp/rpicontrol/";
 
 	/** 브로커서버 주소 */
-	private final String BROKER_URL = "tcp://broker.mqttdashboard.com:1883";
+	private final String BROKER_URL = MyRpiSettings.getMqttBrokerServer();
 
 	/** MQTT 클래스 재시작 필요 */
 	private static boolean requestRestartMQTT = false;
@@ -74,7 +75,7 @@ public class MQTTMonitor implements MqttCallback {
 	String myTopic = topic + deviceId + "/";
 
 	/** 웹DB map정보 쿼리 URL */
-	private final String WebSiteURL = "http://192.168.0.50:8080/putting/" + "fielddata?mapid=";
+	private final String WebSiteURL = MyRpiSettings.getWebServer() + "fielddata?mapid=";
 
 	/** 생성자. 시작시 브로커서버에 접속 */
 	public MQTTMonitor() {
