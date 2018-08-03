@@ -9,14 +9,15 @@ import org.json.simple.JSONObject;
 
 public class SaveMyRpiSettings {
 
+	@SuppressWarnings("unchecked")
 	public static void writeJsonFile() {
-		
+
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
 		System.out.println("Current relative path is: " + s);
-		
-		
+
 		JSONObject puttingInfo = new JSONObject();
+
 		puttingInfo.put(".myDeviceId", "rpihome1");
 		puttingInfo.put("mqttBrokerServer", "tcp://broker.mqttdashboard.com:1883");
 		puttingInfo.put("webServer", "http://192.168.0.50:8080/putting/");
