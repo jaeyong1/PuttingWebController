@@ -1,5 +1,6 @@
 package com.jyp.rpi.json;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -49,8 +50,10 @@ public class MyRpiSettings {
 
 	private static void readJsonFile() {
 
-		String curpath = SaveMyRpiSettings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		String jsonfilepath = curpath + "putting.conf";
+		File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+		String curpath = jarDir.getAbsolutePath();
+		String jsonfilepath = curpath + "/putting.conf";
+		
 		System.out.println("Read JSON File - " + jsonfilepath);
 
 		JSONParser parser = new JSONParser();

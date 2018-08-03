@@ -1,5 +1,6 @@
 package com.jyp.rpi.json;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,8 +21,9 @@ public class SaveMyRpiSettings {
 
 	@SuppressWarnings("unchecked")
 	public static void writeJsonFile() {
-		String curpath = SaveMyRpiSettings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		String jsonfilepath = curpath + "putting.conf";
+		File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+		String curpath = jarDir.getAbsolutePath();
+		String jsonfilepath = curpath + "/putting.conf";
 
 		JSONObject puttingInfo = new JSONObject();
 
