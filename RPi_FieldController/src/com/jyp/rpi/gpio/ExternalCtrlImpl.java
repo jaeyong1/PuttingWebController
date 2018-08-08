@@ -33,7 +33,7 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
 			// send
-			pw.println(msg);
+			pw.print(msg);
 			System.out.println("< send msg : " + msg);
 			pw.flush();
 
