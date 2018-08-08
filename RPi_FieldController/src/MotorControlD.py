@@ -29,7 +29,9 @@ STATE_LED_GPIO = 18
 BOOTDONE_LED_GPIO = 23
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(STATE_LED_GPIO, GPIO.OUT)
+GPIO.setup(BOOTDONE_LED_GPIO, GPIO.OUT)
 GPIO.output(STATE_LED_GPIO, False)
+GPIO.output(BOOTDONE_LED_GPIO, False)
 
 # Uncomment to enable debug output.
 # import logging
