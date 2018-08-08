@@ -1,11 +1,9 @@
 package com.jyp.rpi;
 
-import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.SocketException;
 
+import com.jyp.rpi.gpio.DummyTCPServer;
 import com.jyp.rpi.gpio.ExternalCtrlImpl;
 import com.jyp.rpi.gpio.IExternalCtrl;
 import com.jyp.rpi.util.SystemInfo;
@@ -83,8 +81,8 @@ public class RPi_FieldController {
 			// 시스템별 외부제어 객체 구분
 			if (SystemInfo.isWindows()) {
 				System.out.println("- Windows System(for dev)");
-				ExternalCtrlImpl.setDummyMode(true);
 				exctrl = ExternalCtrlImpl.getInstance();
+				DummyTCPServer.startServer();
 
 			} else if (SystemInfo.isUnix()) {
 				System.out.println("- Linux System(Raspberry Pi)");
@@ -118,7 +116,7 @@ public class RPi_FieldController {
 		System.out.println("[main] isUnix : " + SystemInfo.isUnix());
 
 		// Python code 연결 및 GPIO 구동준비
-		getExtenalCtrlInstance().InitExternalDevice();
+		 getExtenalCtrlInstance().InitExternalDevice();
 
 		// Boot_Done PIN high
 		getExtenalCtrlInstance().setBootDoneLedOn();

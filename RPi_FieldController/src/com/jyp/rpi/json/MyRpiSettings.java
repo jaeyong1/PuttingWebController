@@ -53,7 +53,7 @@ public class MyRpiSettings {
 		File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
 		String curpath = jarDir.getAbsolutePath();
 		String jsonfilepath = curpath + "/putting.conf";
-		
+
 		System.out.println("Read JSON File - " + jsonfilepath);
 
 		JSONParser parser = new JSONParser();
@@ -64,12 +64,12 @@ public class MyRpiSettings {
 			mqttBrokerServer = (String) jsonObject.get("mqttBrokerServer");
 			webServer = (String) jsonObject.get("webServer");
 
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
+			System.out.println("[TEST] putting.conf loading failed!!");
+			myDeviceId = (String) "rpihome1";
+			webServer = (String) "http://192.168.0.50:8080/putting/";
+			mqttBrokerServer = (String) "tcp://broker.mqttdashboard.com:1883";
 		}
 	}
 

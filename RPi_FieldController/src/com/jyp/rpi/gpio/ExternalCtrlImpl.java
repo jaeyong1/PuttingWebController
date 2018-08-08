@@ -1,14 +1,9 @@
 package com.jyp.rpi.gpio;
 
-import org.python.core.PyObject;
-import org.python.util.PythonInterpreter;
+import java.io.*;
+import java.net.*;
 
 public class ExternalCtrlImpl implements IExternalCtrl {
-
-	// to connect with python
-	private PythonInterpreter interpreter;
-	private PyObject pyputtingClass;
-	private IExternalCtrl pyputtingInstance;
 
 	// to state led thread
 	Thread stateledthr = null;
@@ -19,9 +14,6 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 	// to singleton
 	static private ExternalCtrlImpl instance = null;
 
-	// dummy .py loading
-	static private boolean isDummyMode = false;
-
 	public static synchronized ExternalCtrlImpl getInstance() {
 		if (instance == null) {
 			instance = new ExternalCtrlImpl();
@@ -29,25 +21,37 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 		return instance;
 	}
 
-	public static void setDummyMode(boolean isDummyMode) {
-		ExternalCtrlImpl.isDummyMode = isDummyMode;
-		instance = null; // setting change -> reload object
+	public void sendExternalControlMessage(String msg) {
+		// send TCP to 9999 port
+
+		try {
+			// make socket
+			Socket sock = new Socket("0.0.0.0", 9999);
+			OutputStream out = sock.getOutputStream();
+			InputStream in = sock.getInputStream();
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+			// send
+			pw.println(msg);
+			System.out.println("< send msg : " + msg);
+			pw.flush();
+
+			// receive
+			// String inline = br.readLine();
+			// System.out.println(inline);
+
+			// close
+			pw.close();
+			sock.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// constructor
 	private ExternalCtrlImpl() {
-		// find .py file and load class
-		interpreter = new PythonInterpreter();
-		if (isDummyMode) {
-			System.out.println("load PuttingDummy.py ...");
-			interpreter.exec("from PuttingDummy import PuttingDummy");
-			pyputtingClass = interpreter.get("PuttingDummy");
-		} else {
-			System.out.println("load PuttingRpi.py ...");
-			interpreter.exec("from PuttingRpi import PuttingRpi");
-			pyputtingClass = interpreter.get("PuttingRpi");
-		}
-		pyputtingInstance = (IExternalCtrl) create();
 
 		// Daemon thread to control State Led
 		stateledthr = new Thread(new stateLedThread());
@@ -57,30 +61,23 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 
 	}
 
-	// internal usage
-	private IExternalCtrl create() {
-		// get instance from .py
-		PyObject buildingObject = pyputtingClass.__call__();
-		return (IExternalCtrl) buildingObject.__tojava__(IExternalCtrl.class);
-	}
-
 	@Override
 	public int InitExternalDevice() {
-		System.out.println("* [Dummy] Init");
-		getPyputtingInstance().InitExternalDevice();
+		System.out.println("[ExternalCtrlImpl] Init");
+		sendExternalControlMessage("all_zero");
 		return 0;
 	}
 
 	@Override
 	public int setMotorValue(int channel, int percentage) {
-		System.out.println("* [Dummy] setMotorValue. Ch:" + channel + ", Value:" + percentage);
-		getPyputtingInstance().setMotorValue(channel, percentage);
+		System.out.println("[ExternalCtrlImpl] setMotorValue. Ch:" + channel + ", Value:" + percentage);
+		sendExternalControlMessage("moter " + channel + " " + percentage);
 		return 0;
 	}
 
 	@Override
 	public int setStateLED(int state) {
-		System.out.println("* [Dummy] setStateLED. state:" + state);
+		System.out.println("[ExternalCtrlImpl] setStateLED. state:" + state);
 		// set global variable
 		stateledcnt = state;
 		return 0;
@@ -88,32 +85,28 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 
 	@Override
 	public boolean isError() {
-		System.out.println("* [Dummy] isError? ");
-		boolean r = getPyputtingInstance().isError();
-		System.out.println("* [Dummy] isError=" + r);
-		return r;
+		System.out.println("[ExternalCtrlImpl] isError? ");
+		// boolean r = getPyputtingInstance().isError();
+		// System.out.println("[ExternalCtrlImpl] isError=" + r);
+		return false;
 	}
 
 	@Override
 	public void setBootDoneLedOn() {
 		// BootDone GPIO High
-		getPyputtingInstance().setBootDoneLedOn();
+		sendExternalControlMessage("bootdoneled on");
 	}
 
 	@Override
 	public void setBootDoneLedOff() {
 		// BootDone GPIO Low
-		getPyputtingInstance().setBootDoneLedOff();
+		sendExternalControlMessage("bootdoneled off");
 
 	}
 
 	// ONLY for stateLedThread
 	protected static int getStateledcnt() {
 		return stateledcnt;
-	}
-
-	protected IExternalCtrl getPyputtingInstance() {
-		return pyputtingInstance;
 	}
 
 }
@@ -132,17 +125,16 @@ class stateLedThread implements Runnable {
 			try {
 				for (i = 0; i < ExternalCtrlImpl.getStateledcnt(); i++) {
 					// State GPIO High
-					ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(1);
-
+					ExternalCtrlImpl.getInstance().sendExternalControlMessage("stateled on");
 					Thread.sleep(180);
 
 					// State GPIO Low
-					ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(0);
+					ExternalCtrlImpl.getInstance().sendExternalControlMessage("stateled off");
 					Thread.sleep(180);
 				}
 
 				// State GPIO Low
-				ExternalCtrlImpl.getInstance().getPyputtingInstance().setStateLED(0);
+				ExternalCtrlImpl.getInstance().sendExternalControlMessage("stateled off");
 				Thread.sleep(1200);
 
 			} catch (InterruptedException e) {
