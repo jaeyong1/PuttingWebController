@@ -71,7 +71,7 @@ public class ExternalCtrlImpl implements IExternalCtrl {
 	@Override
 	public int setMotorValue(int channel, int percentage) {
 		System.out.println("[ExternalCtrlImpl] setMotorValue. Ch:" + channel + ", Value:" + percentage);
-		sendExternalControlMessage("moter " + channel + " " + percentage);
+		sendExternalControlMessage("motor " + channel + " " + percentage);
 		return 0;
 	}
 
