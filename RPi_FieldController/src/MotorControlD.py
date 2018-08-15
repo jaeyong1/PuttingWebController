@@ -90,7 +90,9 @@ def handle_client_connection(client_socket):
             GPIO.output(BOOTDONE_LED_GPIO, False)
 
     if(len(arr) == 1 and arr[0] == 'all_zero'):
-        pass
+        angle = 150
+        for i in range(16):
+            pwm.set_pwm(int(i), 0, int(angle))
     
     
 
