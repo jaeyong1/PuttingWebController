@@ -1,0 +1,37 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          puttingclient
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop puttingclient
+### END INIT INFO
+
+# More details see:
+# https://github.com/jaeyong1/PuttingWebController/wiki
+
+### Customize this entry
+# Set the USER variable to the name of the user to start puttingclient under
+export USER='pi'
+### End customization required
+
+eval cd ~$USER
+
+case "$1" in
+  start)
+    su $USER -c 'python /home/pi/PuttingWebController/RPi_FieldController/release/MotorControlD.py&'
+    su $USER -c 'cd /home/pi/PuttingWebController/RPi_FieldController/release && java -cp org.eclipse.paho.client.mqttv3_1.1.0.jar:RPi_FieldController.jar:json-simple-1.1.jar:. com.jyp.rpi.RPi_FieldController &'
+    echo "Starting PuttingClient for $USER"
+    ;;
+  stop)
+    pkill python
+    pkill java
+    echo "PuttingClient stopped"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/puttingclient {start|stop}"
+    exit 1
+    ;;
+esac
+exit 0
