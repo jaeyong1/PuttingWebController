@@ -69,10 +69,10 @@ public class SaveMyRpiSettings {
 			mqttBrokerServer = keyin.trim();
 		}
 
-		System.out.print("3. HTTP server [http://192.168.0.50:8080/putting/] : ");
+		System.out.print("3. HTTP server [http://puttingone.cafe24.com/] : ");
 		keyin = user_input.nextLine();
 		if (keyin.equals("")) {
-			webServer = "http://192.168.0.50:8080/putting/";
+			webServer = "http://puttingone.cafe24.com/";
 		} else {
 			webServer = keyin.trim();
 		}
