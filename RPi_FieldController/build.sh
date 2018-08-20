@@ -39,6 +39,9 @@ echo "cd release/"
 echo "python MotorControlD.py&"
 echo "java -cp org.eclipse.paho.client.mqttv3_1.1.0.jar:RPi_FieldController.jar:json-simple-1.1.jar:. com.jyp.rpi.RPi_FieldController"
 echo ""
+echo "  OR.."
+echo "sudo service puttingclient stop"
+echo "sudo service puttingclient start"
 echo ""
 cd release/
 java -cp RPi_FieldController.jar:json-simple-1.1.jar:. com.jyp.rpi.json.SaveMyRpiSettings
