@@ -75,7 +75,8 @@ public class MQTTMonitor implements MqttCallback {
 	String myTopic = topic + "rpihome1/"; // for webserver
 
 	/** 웹DB map정보 쿼리 URL */
-	private final String WebSiteURL = "http://localhost:8080/putting/" + "fielddata?mapid=";
+	private final String WebSiteURL_localhost = "http://localhost:8080/putting/" + "fielddata?mapid=";
+	private final String WebSiteURL = "http://puttingone.cafe24.com/" + "fielddata?mapid=";
 
 	/** Spring framework의 로깅기능 */
 	private static final Logger logger = LoggerFactory.getLogger(MQTTMonitor.class);
@@ -117,6 +118,7 @@ public class MQTTMonitor implements MqttCallback {
 
 	// Connect to Broker
 	public void MQTTConnect() {
+		DevCfg.printMyIp();
 		try {
 			System.out.println("MQTTConnect()");
 			connOpt = new MqttConnectOptions();
@@ -183,10 +185,17 @@ public class MQTTMonitor implements MqttCallback {
 		if (message.toString().startsWith("startfieldchange")) {
 			int startlen = "startfieldchange.mapid=".length();
 			String strMapId = message.toString().substring(startlen);
-			System.out.println("Get Field Data from DB server. Map ID = " + strMapId);
+			logger.info("Get Field Data from DB server. Map ID = " + strMapId);
 
 			// Read raw data from DB
-			String rawDBData = getFieldData(WebSiteURL + strMapId);
+			String rawDBData = "";
+			
+			if (DevCfg.hasMyIp("192.168.0.")) {
+				getFieldData(WebSiteURL_localhost + strMapId);
+			} else {
+				getFieldData(WebSiteURL + strMapId);
+			}
+			
 
 			logger.info("WebDB mapid=" + strMapId + ", height info : " + rawDBData);
 
@@ -223,7 +232,7 @@ public class MQTTMonitor implements MqttCallback {
 			logger.info("Internet connection failed");
 			e.printStackTrace();
 			requestRestartMQTT = true;
-			System.out.println("[FATAL] IOException. set MQTTMoritor restart flag");
+			logger.info("[FATAL] IOException. set MQTTMoritor restart flag");
 		}
 
 		return result.toString();
@@ -239,7 +248,7 @@ public class MQTTMonitor implements MqttCallback {
 		} catch (MqttException e) {
 			e.printStackTrace();
 			requestRestartMQTT = true;
-			System.out.println("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");
+			logger.info("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");
 		}
 	}
 }

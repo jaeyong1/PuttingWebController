@@ -199,6 +199,14 @@ public class MQTTMonitor implements MqttCallback {
 		if (message.toString().startsWith("stopfieldchange")) {
 			RPi_FieldController.stopExternalFieldChanging();
 		}
+		
+		// web으로부터 hello 메세지 응답
+		if (message.toString().startsWith("Hello")) {
+			System.out.println("Hello message from web");
+			
+			// send MQTT publish
+			RPi_FieldController.getMqttclient().MQTTpublish("Hi");
+		}
 
 		System.out.println("---------------------------------------//");
 		System.out.println("");

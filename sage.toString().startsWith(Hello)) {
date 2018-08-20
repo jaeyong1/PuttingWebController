@@ -1,0 +1,223 @@
+[1mdiff --git a/RPi_FieldController/src/com/jyp/rpi/MQTTMonitor.java b/RPi_FieldController/src/com/jyp/rpi/MQTTMonitor.java[m
+[1mindex 93dd951..d2729ee 100644[m
+[1m--- a/RPi_FieldController/src/com/jyp/rpi/MQTTMonitor.java[m
+[1m+++ b/RPi_FieldController/src/com/jyp/rpi/MQTTMonitor.java[m
+[36m@@ -199,6 +199,14 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ 		if (message.toString().startsWith("stopfieldchange")) {[m
+ 			RPi_FieldController.stopExternalFieldChanging();[m
+ 		}[m
+[32m+[m[41m		[m
+[32m+[m		[32m// web으로부터 hello 메세지 응답[m
+[32m+[m		[32mif (message.toString().startsWith("Hello")) {[m
+[32m+[m			[32mSystem.out.println("Hello message from web");[m
+[32m+[m[41m			[m
+[32m+[m			[32m// send MQTT publish[m
+[32m+[m			[32mRPi_FieldController.getMqttclient().MQTTpublish("Hi");[m
+[32m+[m		[32m}[m
+ [m
+ 		System.out.println("---------------------------------------//");[m
+ 		System.out.println("");[m
+[1mdiff --git a/src/main/java/com/jyp/putting/utils/MQTTMonitor.java b/src/main/java/com/jyp/putting/utils/MQTTMonitor.java[m
+[1mindex faefccb..8cf262b 100644[m
+[1m--- a/src/main/java/com/jyp/putting/utils/MQTTMonitor.java[m
+[1m+++ b/src/main/java/com/jyp/putting/utils/MQTTMonitor.java[m
+[36m@@ -75,7 +75,8 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ 	String myTopic = topic + "rpihome1/"; // for webserver[m
+ [m
+ 	/** 웹DB map정보 쿼리 URL */[m
+[31m-	private final String WebSiteURL = "http://localhost:8080/putting/" + "fielddata?mapid=";[m
+[32m+[m	[32mprivate final String WebSiteURL_localhost = "http://localhost:8080/putting/" + "fielddata?mapid=";[m
+[32m+[m	[32mprivate final String WebSiteURL = "http://puttingone.cafe24.com/" + "fielddata?mapid=";[m
+ [m
+ 	/** Spring framework의 로깅기능 */[m
+ 	private static final Logger logger = LoggerFactory.getLogger(MQTTMonitor.class);[m
+[36m@@ -117,6 +118,7 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ [m
+ 	// Connect to Broker[m
+ 	public void MQTTConnect() {[m
+[32m+[m		[32mDevCfg.printMyIp();[m
+ 		try {[m
+ 			System.out.println("MQTTConnect()");[m
+ 			connOpt = new MqttConnectOptions();[m
+[36m@@ -183,10 +185,17 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ 		if (message.toString().startsWith("startfieldchange")) {[m
+ 			int startlen = "startfieldchange.mapid=".length();[m
+ 			String strMapId = message.toString().substring(startlen);[m
+[31m-			System.out.println("Get Field Data from DB server. Map ID = " + strMapId);[m
+[32m+[m			[32mlogger.info("Get Field Data from DB server. Map ID = " + strMapId);[m
+ [m
+ 			// Read raw data from DB[m
+[31m-			String rawDBData = getFieldData(WebSiteURL + strMapId);[m
+[32m+[m			[32mString rawDBData = "";[m
+[32m+[m[41m			[m
+[32m+[m			[32mif (DevCfg.hasMyIp("192.168.0.")) {[m
+[32m+[m				[32mgetFieldData(WebSiteURL_localhost + strMapId);[m
+[32m+[m			[32m} else {[m
+[32m+[m				[32mgetFieldData(WebSiteURL + strMapId);[m
+[32m+[m			[32m}[m
+[32m+[m[41m			[m
+ [m
+ 			logger.info("WebDB mapid=" + strMapId + ", height info : " + rawDBData);[m
+ [m
+[36m@@ -223,7 +232,7 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ 			logger.info("Internet connection failed");[m
+ 			e.printStackTrace();[m
+ 			requestRestartMQTT = true;[m
+[31m-			System.out.println("[FATAL] IOException. set MQTTMoritor restart flag");[m
+[32m+[m			[32mlogger.info("[FATAL] IOException. set MQTTMoritor restart flag");[m
+ 		}[m
+ [m
+ 		return result.toString();[m
+[36m@@ -239,7 +248,7 @@[m [mpublic class MQTTMonitor implements MqttCallback {[m
+ 		} catch (MqttException e) {[m
+ 			e.printStackTrace();[m
+ 			requestRestartMQTT = true;[m
+[31m-			System.out.println("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");[m
+[32m+[m			[32mlogger.info("[FATAL] MQTTpublish(). set MQTTMoritor restart flag");[m
+ 		}[m
+ 	}[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/src/main/resources/log4j.xml b/src/main/resources/log4j.xml[m
+[1mindex 56d86df..bwarning: LF will be replaced by CRLF in src/main/resources/log4j.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in src/main/webapp/WEB-INF/spring/root-context.xml.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in src/test/resources/log4j.xml.
+The file will have its original line endings in your working directory.
+e13077 100644[m
+[1m--- a/src/main/resources/log4j.xml[m
+[1m+++ b/src/main/resources/log4j.xml[m
+[36m@@ -15,21 +15,26 @@[m
+ 		<level value="info" />[m
+ 	</logger>[m
+ [m
+[31m-	<!-- Service Loggers [ADD by JYP] -->[m
+[31m-	<logger name="com.jyp.putting.service">[m
+[32m+[m	[32m<!-- DAO Loggers [ADD by JYP] -->[m
+[32m+[m	[32m<logger name="com.jyp.putting.dao">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+ [m
+ 	<!-- DAO Loggers [ADD by JYP] -->[m
+[31m-	<logger name="com.jyp.putting.dao">[m
+[32m+[m	[32m<logger name="com.jyp.putting.domain">[m
+[32m+[m		[32m<level value="info" />[m
+[32m+[m	[32m</logger>[m
+[32m+[m
+[32m+[m	[32m<!-- Service Loggers [ADD by JYP] -->[m
+[32m+[m	[32m<logger name="com.jyp.putting.service">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- MQTT Loggers [ADD by JYP] -->[m
+ 	<logger name="com.jyp.putting.utils">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- 3rdparty Loggers -->[m
+ 	<logger name="org.springframework.core">[m
+ 		<level value="info" />[m
+[1mdiff --git a/src/main/webapp/WEB-INF/spring/root-context.xml b/src/main/webapp/WEB-INF/spring/root-context.xml[m
+[1mindex 9d105ef..588dd2f 100644[m
+[1m--- a/src/main/webapp/WEB-INF/spring/root-context.xml[m
+[1m+++ b/src/main/webapp/WEB-INF/spring/root-context.xml[m
+[36m@@ -26,7 +26,7 @@[m
+  	-->[m
+  	[m
+ 	<!-- jdbc모듈을 이용하여 dataSource추가하기. [puttingone.cafe24] -->[m
+[31m-	<!-- [m
+[32m+[m	[32m<!--[m[41m  [m
+ 	<bean id="dataSource"[m
+ 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">[m
+ 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>[m
+[36m@@ -35,10 +35,9 @@[m
+ 		<property name="username" value="puttingone"></property>[m
+ 		<property name="password" value="puttingone1"></property>[m
+ 	</bean>[m
+[31m- 	-->[m
+[31m- 	[m
+[32m+[m[41m [m	[32m -->[m
+ 	<!-- jdbc모듈을 이용하여 dataSource추가하기. [localhost] -->[m
+[31m-	 [m
+[32m+[m[41m	  [m
+ 	<bean id="dataSource"[m
+ 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">[m
+ 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>[m
+[36m@@ -47,7 +46,7 @@[m
+ 		<property name="username" value="puttingone"></property>[m
+ 		<property name="password" value="puttingone1"></property>[m
+ 	</bean>[m
+[31m- 	[m
+[32m+[m[41m 	 [m
+ [m
+ 	<!-- mybatis와 스프링 연동작을 하기위한 SqlsessionFactory == DB연결 및 SQL의 실행을 대한객체 -->[m
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">[m
+[1mdiff --git a/src/test/resources/log4j.xml b/src/test/resources/log4j.xml[m
+[1mindex 3cc619c..d426c79 100644[m
+[1m--- a/src/test/resources/log4j.xml[m
+[1m+++ b/src/test/resources/log4j.xml[m
+[36m@@ -14,7 +14,7 @@[m
+ 	<logger name="com.jyp.putting.controller">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- 3rdparty Loggers -->[m
+ 	<logger name="org.springframework.core">[m
+ 		<level value="info" />[m
+[1mdiff --git a/target/classes/log4j.xml b/target/classes/log4j.xml[m
+[1mindex 56d86df..be13077 100644[m
+[1m--- a/target/classes/log4j.xml[m
+[1m+++ b/target/classes/log4j.xml[m
+[36m@@ -15,21 +15,26 @@[m
+ 		<level value="info" />[m
+ 	</logger>[m
+ [m
+[31m-	<!-- Service Loggers [ADD by JYP] -->[m
+[31m-	<logger name="com.jyp.putting.service">[m
+[32m+[m	[32m<!-- DAO Loggers [ADD by JYP] -->[m
+[32m+[m	[32m<logger name="com.jyp.putting.dao">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+ [m
+ 	<!-- DAO Loggers [ADD by JYP] -->[m
+[31m-	<logger name="com.jyp.putting.dao">[m
+[32m+[m	[32m<logger name="com.jyp.putting.domain">[m
+[32m+[m		[32m<level value="info" />[m
+[32m+[m	[32m</logger>[m
+[32m+[m
+[32m+[m	[32m<!-- Service Loggers [ADD by JYP] -->[m
+[32m+[m	[32m<logger name="com.jyp.putting.service">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- MQTT Loggers [ADD by JYP] -->[m
+ 	<logger name="com.jyp.putting.utils">warning: LF will be replaced by CRLF in target/classes/log4j.xml.
+The file will have its original line endings in your working directory.
+[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- 3rdparty Loggers -->[m
+ 	<logger name="org.springframework.core">[m
+ 		<level value="info" />[m
+[1mdiff --git a/target/test-classes/log4j.xml b/target/test-classes/log4j.xml[m
+[1mindex 3cc619c..d426c79 100644[m
+[1m--- a/target/test-classes/log4j.xml[m
+[1m+++ b/target/test-classes/log4j.xml[m
+[36m@@ -14,7 +14,7 @@[m
+ 	<logger name="com.jyp.putting.controller">[m
+ 		<level value="info" />[m
+ 	</logger>[m
+[31m-	[m
+[32m+[m
+ 	<!-- 3rdparty Loggers -->[m
+ 	<logger name="org.springframework.core">[m
+ 		<level value="info" />[m
+warning: LF will be replaced by CRLF in target/test-classes/log4j.xml.
+The file will have its original line endings in your working directory.

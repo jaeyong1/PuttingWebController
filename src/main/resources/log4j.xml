@@ -15,21 +15,26 @@
 		<level value="info" />
 	</logger>
 
+	<!-- DAO Loggers [ADD by JYP] -->
+	<logger name="com.jyp.putting.dao">
+		<level value="info" />
+	</logger>
+
+	<!-- DAO Loggers [ADD by JYP] -->
+	<logger name="com.jyp.putting.domain">
+		<level value="info" />
+	</logger>
+
 	<!-- Service Loggers [ADD by JYP] -->
 	<logger name="com.jyp.putting.service">
 		<level value="info" />
 	</logger>
 
-	<!-- DAO Loggers [ADD by JYP] -->
-	<logger name="com.jyp.putting.dao">
-		<level value="info" />
-	</logger>
-	
 	<!-- MQTT Loggers [ADD by JYP] -->
 	<logger name="com.jyp.putting.utils">
 		<level value="info" />
 	</logger>
-	
+
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
