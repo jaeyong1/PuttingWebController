@@ -166,6 +166,32 @@
 	</section>
 
 
+
+	<!-- 로딩팝업 모달창 -->
+	<script>
+		$(function() {
+			//when loading..
+			show_loading_popup();
+
+		});
+		
+		function show_loading_popup(){
+			console.log("로딩모달 표시");		
+		}
+		
+		
+		function hide_loading_popup(){
+			console.log("로딩모달 숨김");
+	        
+		}
+	</script>
+
+	<!-- 로딩팝업 모달창 끝 -->
+
+
+
+
+
 	<!-- 모달팝업 시작 -->
 
 	<!-- 모달창 프로그래스바 제어 -->
@@ -290,6 +316,9 @@
 				progressbar_force(90)
 			} else if (message.payloadString == 'prog100') {
 				window.history.go(0);
+			} else if (message.payloadString == 'Hi') {
+				console.log("RPi로 부터 Hi메세지 응답수신");
+				hide_loading_popup();
 			} else {
 				console.log("MQTT msg 무시 : " + message.payloadString);
 			}
