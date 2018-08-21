@@ -28,15 +28,6 @@
 	href="bootstrap/startbootstrap-full-slider-gh-pages/css/full-slider.css"
 	rel="stylesheet">
 
-
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
 </head>
 
 <body>
@@ -174,18 +165,39 @@
 			show_loading_popup();
 
 		});
-		
-		function show_loading_popup(){
-			console.log("로딩모달 표시");		
+
+		function show_loading_popup() {
+			console.log("로딩모달 표시");
+
+			// Show the Modal on load
+			$("#myModal99").modal("show");
+
 		}
-		
-		
-		function hide_loading_popup(){
+
+		function hide_loading_popup() {
 			console.log("로딩모달 숨김");
-	        
+			$("#myModal99").modal("hide");
+
 		}
 	</script>
 
+	<!-- Modal -->
+	<div class="modal fade" id="myModal99" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">장치 연결 확인 중</h4>
+				</div>
+				<div class="modal-body">
+					<p>잠시만 기다려 주세요. 연결이 확인되면 팝업은 자동으로 사라집니다.</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
 	<!-- 로딩팝업 모달창 끝 -->
 
 
