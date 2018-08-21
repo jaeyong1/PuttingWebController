@@ -223,13 +223,18 @@
 
 		function progressbar_reset() {
 			valeur = 0;
-			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
-					valeur);
+
+			valeur_p = valeur + "%";
+			$(".progress-bar").animate({
+				width : valeur_p
+			}, 200);
 		}
 		function progressbar_plus10() {
 			valeur = valeur + 10;
-			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
-					valeur);
+			valeur_p = valeur + "%";
+			$(".progress-bar").animate({
+				width : valeur_p
+			}, 200);
 
 			if (valeur >= 100) {
 				//$('#myModal').modal('hide');
@@ -239,9 +244,10 @@
 		}
 
 		function progressbar_force(forcevalue) {
-			valeur = forcevalue;
-			$('.progress-bar').css('width', valeur + '%').attr('aria-valuenow',
-					valeur);
+			valeur_p = forcevalue + "%";
+			$(".progress-bar").animate({
+				width : valeur_p
+			}, 200);
 
 		}
 	</script>
@@ -327,6 +333,7 @@
 			} else if (message.payloadString == 'prog90') {
 				progressbar_force(90)
 			} else if (message.payloadString == 'prog100') {
+				progressbar_force(100)
 				window.history.go(0);
 			} else if (message.payloadString == 'Hi') {
 				console.log("RPi로 부터 Hi메세지 응답수신");
