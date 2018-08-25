@@ -147,7 +147,7 @@
 
 			<div class="col-lg-3 col-md-6 mb-4">
 				<div class="card">
-					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<img class="card-img-top" src="images/gamelogo.jpg" alt="">
 					<div class="card-body">
 						<h4 class="card-title">같이하기</h4>
 						<p class="card-text">소중한 사람들과 함께 가상의 필드에서 퍼팅을 즐겨보세요. 주어지는 미션을
