@@ -32,68 +32,8 @@
 
 <body>
 
-	<!-- Navigation -->
-	<script>
-		function logout() {
-			var response = confirm("로그아웃 하시겠습니까?")
-			if (response) {
-				//do yes task
-				window.location.href = 'login';
-			} else {
-				//do no task
-			}
-
-		}
-		function login() {
-			window.location.href = 'login';
-		}
-	</script>
 
 
-	<!-- Navigation -->
-	<!-- 
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarResponsive" aria-controls="navbarResponsive"
-				aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a class="nav-link" href="#">Home
-							<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">About</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Services</a>
-					</li>
-					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
-					</li>
-
-					<c:choose>
-						<c:when test="${not empty sessionScope.playerInfo }">
-							<li class="nav-item"><a class="nav-link"
-								OnClick="javascript:logout();"> <c:out
-										value="${sessionScope.playerInfo.locationName} - ${sessionScope.playerInfo.deviceId}" />호기
-									연결중
-							</a></li>
-						</c:when>
-						<c:otherwise>
-
-
-							<li class="nav-item"><a class="nav-link"
-								OnClick="javascript:login();"> 로그인 </a></li>
-
-
-						</c:otherwise>
-					</c:choose>
-					
-				</ul>
-			</div>
-		</div>
-	</nav>
- -->
 	<header>
 		<div id="carouselExampleIndicators" class="carousel slide"
 			data-ride="carousel">
@@ -135,13 +75,13 @@
 	</header>
 
 	<!-- Page Content -->
-	<center>
+	<div align="center">
 		<button type="button" class="btn btn-info btn-lg"
 			OnClick="javascript:goBack();">뒤로가기</button>
 		<button type="button" class="btn btn-info btn-lg" data-toggle="modal"
 			data-target="#myModal" OnClick="javascript:startfieldchange()">적용하기</button>
+	</div>
 
-	</center>
 
 	<section class="py-5">
 		<div class="container">
@@ -155,52 +95,6 @@
 			</p>
 		</div>
 	</section>
-
-
-
-	<!-- 로딩팝업 모달창 -->
-	<script>
-		$(function() {
-			//when loading..
-			show_loading_popup();
-
-		});
-
-		function show_loading_popup() {
-			console.log("로딩모달 표시");
-
-			// Show the Modal on load
-			$("#myModal99").modal("show");
-
-		}
-
-		function hide_loading_popup() {
-			console.log("로딩모달 숨김");
-			$("#myModal99").modal("hide");
-
-		}
-	</script>
-
-	<!-- Modal -->
-	<div class="modal fade" id="myModal99" role="dialog">
-		<div class="modal-dialog">
-
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">장치 연결 확인 중</h4>
-				</div>
-				<div class="modal-body">
-					<p>잠시만 기다려 주세요. 연결이 확인되면 팝업은 자동으로 사라집니다.</p>
-				</div>
-			</div>
-
-		</div>
-	</div>
-	</div>
-	<!-- 로딩팝업 모달창 끝 -->
-
-
 
 
 
@@ -266,28 +160,33 @@
 		client.onConnectionLost = onConnectionLost;
 		client.onMessageArrived = onMessageArrived;
 
-		// connect the client
-		client.connect({
-			onSuccess : onConnect
-		});
-
 		// called when the client connects
 		function onConnect() {
 			// Once a connection has been made, make a subscription and send a message.
-			console.log("onConnect");
+			console.log("onConnect()");
+			progressbar_force(5)
+			console.log("mqtt subscribe");
 			client
 					.subscribe("/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/");
-			message = new Paho.MQTT.Message("Hello");
-			message.destinationName = "/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/";
-			client.send(message);
-		}
 
-		function startfieldchange() {
-			progressbar_reset();
 			message = new Paho.MQTT.Message(
 					"startfieldchange.mapid=${sessionScope.playerInfo.selectedMapId}");
 			message.destinationName = "/jyp/rpicontrol/${sessionScope.playerInfo.deviceId}/";
 			client.send(message);
+			console.log("<MQTT mapid=${sessionScope.playerInfo.selectedMapId}");
+
+		}
+
+		function startfieldchange() {
+			console.log("startfieldchange()");
+			progressbar_reset();
+
+			console.log("mqtt connect");
+			// connect the client
+			client.connect({
+				onSuccess : onConnect
+			})
+
 		}
 
 		function stopfieldchange() {
@@ -306,16 +205,14 @@
 
 		// called when a message arrives
 		function onMessageArrived(message) {
-			console.log("onMessageArrived:" + message.payloadString);
-			if (message.payloadString == 'prog') {
-				progressbar_force(0)
-			} else if (message.payloadString == 'prog00'
+			console.log(">MQTT " + message.payloadString);
+			if (message.payloadString == 'prog00'
 					|| message.payloadString == 'prog0') {
-				progressbar_force(0)
+				//progressbar_force(0)
 			} else if (message.payloadString.indexOf('startfieldchange') != -1) {
-				progressbar_force(0)
+				//progressbar_force(0)
 			} else if (message.payloadString == 'prog10') {
-				progressbar_force(20)
+				progressbar_force(10)
 			} else if (message.payloadString == 'prog20') {
 				progressbar_force(20)
 			} else if (message.payloadString == 'prog30') {
@@ -335,11 +232,8 @@
 			} else if (message.payloadString == 'prog100') {
 				progressbar_force(100)
 				window.history.go(0);
-			} else if (message.payloadString == 'Hi') {
-				console.log("RPi로 부터 Hi메세지 응답수신");
-				hide_loading_popup();
 			} else {
-				console.log("MQTT msg 무시 : " + message.payloadString);
+				console.log(">MQTT msg 무시 : " + message.payloadString);
 			}
 		}
 	</script>
