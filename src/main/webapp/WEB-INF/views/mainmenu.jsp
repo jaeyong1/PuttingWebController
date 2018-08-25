@@ -118,7 +118,7 @@
 			<div class="col-lg-3 col-md-6 mb-4">
 				<div class="card">
 					<a href="lesson"><img class="card-img-top"
-						src="http://placehold.it/500x325" alt=""></a>
+						src="images/lessonlogo.jpg" alt=""></a>
 					<div class="card-body">
 						<h4 class="card-title">레슨</h4>
 						<p class="card-text">지형 레벨에 맞추어 연습을 할 수 있습니다. 차곡차곡 난이도를 올려가며

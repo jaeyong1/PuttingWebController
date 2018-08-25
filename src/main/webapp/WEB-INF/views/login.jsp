@@ -55,9 +55,9 @@
 	*****************************
 	 -->
 
-	<center>
+	<div align="center">
 		<img src="images/logo.jpg" class="img-rounded" alt="Cinque Terre">
-	</center>
+	</div>
 	<form class="form-signin" name="loginform">
 
 		<h2 class="form-signin-heading">HS Golf</h2>
