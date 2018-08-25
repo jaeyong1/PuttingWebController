@@ -32,6 +32,7 @@ public class mysqlTest {
 		} catch (Exception e) {
 			System.out.println("실패");
 			e.printStackTrace();
+		} finally {
 		}
 	}
 

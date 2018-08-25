@@ -72,7 +72,7 @@ public class MQTTMonitor implements MqttCallback {
 	private MqttConnectOptions connOpt;
 
 	/** 응답할 토픽 */
-	String myTopic = topic + "rpihome1/"; // for webserver
+	String myTopic = topic;// + "rpihome1/"; // for webserver
 
 	/** 웹DB map정보 쿼리 URL */
 	private final String WebSiteURL_localhost = "http://localhost:8080/putting/" + "fielddata?mapid=";
