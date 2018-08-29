@@ -17,7 +17,8 @@
 	<resources mapping="/bootstrap/**" location="/resources/bootstrap/" />
 	<resources mapping="/css/**" location="/resources/css/" />
 	<resources mapping="/images/**" location="/resources/images/" />
-	<resources mapping="/js/**" location="/resources/js/" />	
+	<resources mapping="/js/**" location="/resources/js/" />
+	<resources mapping="/mapinfo/**" location="/resources/mapinfo/" />
 	<resources mapping="/resources/**" location="/resources/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
@@ -28,8 +29,6 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<context:component-scan base-package="com.jyp.putting.controller" />
-
-
+	<context:component-scan base-package="com.jyp.putting" />
 
 </beans:beans>

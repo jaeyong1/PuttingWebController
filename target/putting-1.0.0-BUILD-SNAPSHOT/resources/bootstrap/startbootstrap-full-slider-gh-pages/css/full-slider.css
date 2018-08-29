@@ -13,3 +13,8 @@
   -o-background-size: cover;
   background-size: cover;
 }
+
+.progress.active .progress-bar {
+    -webkit-transition: none !important;
+    transition: none !important;
+}

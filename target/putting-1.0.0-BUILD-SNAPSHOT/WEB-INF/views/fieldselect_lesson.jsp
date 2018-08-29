@@ -15,7 +15,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>1 Col Portfolio - Start Bootstrap Template</title>
+<title>HS Golf - Lesson</title>
 
 <!-- Bootstrap core CSS -->
 <link
@@ -30,11 +30,30 @@
 </head>
 
 <body>
+	<!-- Navigation -->
+	<script>
+		function goBack() {
+			window.history.go(-1);
+		}
 
+		function logout() {
+			var response = confirm("로그아웃 하시겠습니까?")
+			if (response) {
+				//do yes task
+				window.location.href = 'login';
+			} else {
+				//do no task
+			}
+
+		}
+		function login() {
+			window.location.href = 'login';
+		}
+	</script>
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="#">Start Bootstrap</a>
+			<a class="navbar-brand" href="mainmenu">HS Golf</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarResponsive" aria-controls="navbarResponsive"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +69,25 @@
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Contact</a>
 					</li>
+
+					<!-- 로그인 정보 -->
+					<c:choose>
+						<c:when test="${not empty sessionScope.playerInfo }">
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:logout();"> <c:out
+										value="${sessionScope.playerInfo.locationName} " />연결중
+							</a></li>
+						</c:when>
+						<c:otherwise>
+
+
+							<li class="nav-item"><a class="nav-link"
+								OnClick="javascript:login();"> 로그인 </a></li>
+
+
+						</c:otherwise>
+					</c:choose>
+					<!-- ./ 로그인 정보 -->
 				</ul>
 			</div>
 		</div>
@@ -60,89 +98,37 @@
 
 		<!-- Page Heading -->
 		<h1 class="my-4">
-			Page Heading <small>Secondary Text</small>
+			Lesson<small>차곡차곡 경험을 쌓아보세요</small>
 		</h1>
 
-		<!-- Project One -->
-		<div class="row">
-			<div class="col-md-7">
-				<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
-					src="http://placehold.it/700x300" alt="">
-				</a>
-			</div>
-			<div class="col-md-5">
-				<h3>Project One</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-					Laudantium veniam exercitationem expedita laborum at voluptate.
-					Labore, voluptates totam at aut nemo deserunt rem magni pariatur
-					quos perspiciatis atque eveniet unde.</p>
-				<a class="btn btn-primary" href="#">View Project</a>
-			</div>
-		</div>
-		<!-- /.row -->
+		<!-- DB 데이터 표시 -->
+		<c:forEach var="i" items="${items}" varStatus="status">
 
-		<hr>
-
-		<!-- Project Two -->
-		<div class="row">
-			<div class="col-md-7">
-				<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
-					src="http://placehold.it/700x300" alt="">
-				</a>
+			<!-- Project One -->
+			<div class="row">
+				<div class="col-md-7">
+					<a href="fieldselect?mapid=${i.id}"> <img
+						class="img-fluid rounded mb-3 mb-md-0"
+						src="mapinfo/${i.id}/700lesson.jpg" alt="">
+					</a>
+				</div>
+				<div class="col-md-5">
+					<!-- CC이름 Hole이름 -->
+					<h3>${i.ccname} ${i.holename}</h3>
+					<!-- 난이도별+설명 -->
+					<p>${i.desc}</p>
+					<a class="btn btn-primary" href="fieldselect?mapid=${i.id}">자세히
+						보기</a> <a class="btn btn-primary" href="fieldselect?mapid=${i.id}">필드적용</a>
+				</div>
 			</div>
-			<div class="col-md-5">
-				<h3>Project Two</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut,
-					odit velit cumque vero doloremque repellendus distinctio maiores
-					rem expedita a nam vitae modi quidem similique ducimus! Velit, esse
-					totam tempore.</p>
-				<a class="btn btn-primary" href="#">View Project</a>
-			</div>
-		</div>
-		<!-- /.row -->
+			<!-- /.row -->
 
-		<hr>
+			<hr>
+			</form>
+		</c:forEach>
 
-		<!-- Project Three -->
-		<div class="row">
-			<div class="col-md-7">
-				<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
-					src="http://placehold.it/700x300" alt="">
-				</a>
-			</div>
-			<div class="col-md-5">
-				<h3>Project Three</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-					Omnis, temporibus, dolores, at, praesentium ut unde repudiandae
-					voluptatum sit ab debitis suscipit fugiat natus velit excepturi
-					amet commodi deleniti alias possimus!</p>
-				<a class="btn btn-primary" href="#">View Project</a>
-			</div>
-		</div>
-		<!-- /.row -->
 
-		<hr>
 
-		<!-- Project Four -->
-		<div class="row">
-
-			<div class="col-md-7">
-				<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
-					src="http://placehold.it/700x300" alt="">
-				</a>
-			</div>
-			<div class="col-md-5">
-				<h3>Project Four</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-					Explicabo, quidem, consectetur, officia rem officiis illum aliquam
-					perspiciatis aspernatur quod modi hic nemo qui soluta aut eius
-					fugit quam in suscipit?</p>
-				<a class="btn btn-primary" href="#">View Project</a>
-			</div>
-		</div>
-		<!-- /.row -->
-
-		<hr>
 
 		<!-- Pagination -->
 		<ul class="pagination justify-content-center">

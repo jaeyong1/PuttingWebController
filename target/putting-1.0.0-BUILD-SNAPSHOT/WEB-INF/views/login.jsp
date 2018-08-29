@@ -15,16 +15,28 @@
 
 
 <!-- Bootstrap core CSS -->
-<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/basicstyle/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Custom styles for this template  -->
-<link href="/css/login.css" rel="stylesheet">
+<link href="css/login.css" rel="stylesheet">
+
 
 </head>
 
 <body oncontextmenu='return false'>
 	<!--  HEADER  -->
 	<script language="javascript">
+		$(function() {
+			//when loading..
+			if ('${popupclosemsg}' != '') {
+				confirm(' ${popupclosemsg} ');
+			}
+
+			window.opener.location.href = '${requestedURL}';
+			window.close();
+
+		});
+
 		function applyFields() {
 			//newuserform		
 			var nm = document.forms["loginform"].elements["user-Id"].value;
@@ -43,33 +55,32 @@
 	*****************************
 	 -->
 
+	<div align="center">
+		<img src="images/logo.jpg" class="img-rounded" alt="Cinque Terre">
+	</div>
 	<form class="form-signin" name="loginform">
-		<h2 class="form-signin-heading">
-			<center>Login</center>
-		</h2>
 
-		<br> <label for="inputEmail" class="sr-only">Email
-			address</label>
+		<h2 class="form-signin-heading">HS Golf</h2>
+
+
+
 
 		<!-- ID -->
 		<label for="exampleInputEmail1">연결할 장치 고유번호</label> <input type="text"
 			id="user-Id" name='user-Id' class="form-control" placeholder="장치번호"
-			required autofocus> <small id="emailHelp"
-			class="form-text text-muted">기기장치의 고유번호를 입력해 주세요</small>
-<p>
-		<!-- Password -->
-		<label for="exampleInputPassword1">Password</label> <input
-			type="password" id="login-pw" name='login-pw' autocomplete='off'
-			class="form-control" placeholder="비밀번호" required>
+			required autofocus>
+		<p>
+			<!-- Password -->
+			<label for="exampleInputPassword1">Password</label> <input
+				type="password" id="login-pw" name='login-pw' autocomplete='off'
+				class="form-control" placeholder="비밀번호" required>
 
-		<!-- button -->
-		<br>
-		<button type="button" class="btn btn-lg btn-primary btn-block"
-			OnClick="javascript:applyFields();">연결하기</button>
+			<!-- button -->
+			<br>
+			<button type="button" class="btn btn-lg btn-primary btn-block"
+				OnClick="javascript:applyFields();">연결하기</button>
 
-		<!-- <img alt="" src="resources/image/a.jpg"> 이미지 사용 샘플 -->
-
-
+			<!-- <img alt="" src="resources/image/a.jpg"> 이미지 사용 샘플 -->
 	</form>
 
 
