@@ -21,7 +21,7 @@
 	<select id="selectItemList" resultMap="FieldItemMap">
 		SELECT *
 		FROM `put_fields`
-		ORDER BY  `put_fields`.`id` ASC 
+		ORDER BY `put_fields`.`id` ASC
 		LIMIT 0 , 30
 	</select>
 
@@ -46,6 +46,37 @@
 		#{logingUserId} AND
 		`password`
 		= #{loginUserPassword}
+	</select>
+
+	<!-- 데이터 Insert 테스트 [start] -->
+	<!-- Step1. Increase the seq num -->
+	<insert id="increasePK_Table1">
+		INSERT INTO `table1_seq` (`id`) VALUES (NULL);
+	</insert>
+
+	<!-- Step2. get seq num -->
+	<select id="queryPK_Table1" resultType="string">
+		SELECT id FROM
+		`table1_seq` ORDER BY `id` DESC LIMIT 0 , 1
+	</select>
+
+	<!-- Step3. insert item to table -->
+	<insert id="insert_table1">
+		INSERT INTO `table1` (
+		`id` ,
+		`name`
+		)
+		VALUES (
+		#{id},
+		#{name}
+		);
+	</insert>
+
+	<!-- 데이터 Insert 테스트 [End] -->
+	<select id="querytableWithPK" parameterType="String" resultMap="TableVoMap">
+		SELECT *
+		FROM `table1`
+		WHERE `id` = #{id};
 	</select>
 
 </mapper>

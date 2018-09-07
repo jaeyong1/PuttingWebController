@@ -25,4 +25,9 @@
 		<result property="runState" column="runState" />
 	</resultMap>
 
+	<!-- 테스트용 VO -->
+	<resultMap id="TableVoMap" type="com.jyp.putting.domain.TableVo">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+	</resultMap>
 </mapper>

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.jyp.putting.dao.ItemDao;
 import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
+import com.jyp.putting.domain.TableVo;
 
 @Service("itemService")
 public class ItemService {
@@ -58,4 +59,25 @@ public class ItemService {
 		return items.get(0);
 
 	}
+
+	public TableVo jsonTestInsertAndReturn(TableVo tv) {
+		// insert item
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("id", "");
+		paramMap.put("name", tv.getName());
+		String pk = itemDao.insertJSONTestNewItem(paramMap);
+		logger.info("Item Service - jsonTestInsertAndReturn. insertJSONTestNewItem. new PK : " + pk);
+
+		// query item
+		Map<String, String> paramMap2 = new HashMap<String, String>();
+		paramMap2.put("id", pk);
+		List<TableVo> rvos = itemDao.queryJSONTestItemWithId(paramMap2);
+		if (rvos.size() > 0) {
+			logger.info("Item Service - jsonTestInsertAndReturn. queryJSONTestItemWithId. success");
+			return rvos.get(0);
+		}
+		return null;
+
+	}
+
 }

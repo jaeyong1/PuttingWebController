@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
+import com.jyp.putting.domain.TableVo;
 
 @Repository // DAO라고 명시 (DAO를 스프링에서 인식시켜줌)
 public class ItemDao {
@@ -34,6 +35,27 @@ public class ItemDao {
 	public List<Player> queryPlayerByIDPW(Map<String, String> paramMap) {
 		logger.info("queryPlayerByIDPW");
 		return sqlSession.selectList("queryPlayerByIDPW", paramMap);
+	}
+
+	/* JSon Test */
+	public synchronized String insertJSONTestNewItem(Map<String, String> paramMap) {
+		// make new pk & query pk
+		sqlSession.insert("increasePK_Table1", paramMap);
+		// String pk = "VIP" + (sqlSession.selectOne("queryPK_Table1"));
+		Long pknum = Long.parseLong((String) sqlSession.selectOne("queryPK_Table1"));
+		String pk = String.format("VIP%07d", pknum);
+		logger.info("DAO PK :" + pk);
+
+		// insert item
+		paramMap.put("id", pk);
+		sqlSession.insert("insert_table1", paramMap);
+		return pk;
+	}
+
+	public List<TableVo> queryJSONTestItemWithId(Map<String, String> paramMap) {
+		List<TableVo> arrVo = sqlSession.selectList("querytableWithPK", paramMap);
+		logger.info("DAO arrVo.size() :" + arrVo.size());
+		return arrVo;
 	}
 
 }

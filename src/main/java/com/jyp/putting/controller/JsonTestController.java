@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.PlayerList;
+import com.jyp.putting.domain.TableVo;
 import com.jyp.putting.service.ItemService;
 
 @Controller
-public class ShopManagerJson {
+public class JsonTestController {
 
 	/*
 	 * Controller - Service 연결
@@ -26,8 +27,8 @@ public class ShopManagerJson {
 	@Autowired
 	private ItemService itemService;
 
+	private static final Logger logger = LoggerFactory.getLogger(JsonTestController.class);
 
-	private static final Logger logger = LoggerFactory.getLogger(ShopManagerJson.class);
 	/**
 	 * Input - Nothing(GET)
 	 * 
@@ -76,7 +77,7 @@ public class ShopManagerJson {
 		return objectVO;
 
 	}
-	
+
 	/*-
 	 * PostMan 에서..
 	 * POST 메뉴 선택하고, Body -> raw -> JSON(application/json)
@@ -89,7 +90,7 @@ public class ShopManagerJson {
 	 * 
 	 * @return
 	 */
-	
+
 	@RequestMapping(value = "/jsontest_playerpost", method = RequestMethod.POST)
 	@ResponseBody
 	public Player test_put(@RequestBody Player postedPlayer) {
@@ -101,8 +102,19 @@ public class ShopManagerJson {
 		vo.setDeviceId("devId222");
 		vo.setSelectedMapId(2);
 		return vo;
-		
-	
+
 	}
-	
+
+	@RequestMapping(value = "/jsontestinput", method = RequestMethod.POST)
+	@ResponseBody
+	public TableVo test_put1(@RequestBody TableVo postedPlayer) {
+		logger.info("Post - insert id with prefix. with JSON");
+		logger.info(">> TableVo.id:" + postedPlayer.getId() + ", TableVo.name:" + postedPlayer.getName());
+
+		TableVo reVo = itemService.jsonTestInsertAndReturn(postedPlayer);
+		logger.info("<< TableVo.id:" + reVo.getId() + ", TableVo.name:" + reVo.getName());
+		return reVo;
+
+	}
+
 }
