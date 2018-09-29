@@ -17,6 +17,8 @@ import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.PlayerList;
 import com.jyp.putting.domain.TableVo;
 import com.jyp.putting.service.ItemService;
+import com.jyp.shopmanager.domain.RoomReservation;
+import com.jyp.shopmanager.domain.RoomReservationList;
 
 @Controller
 public class JsonController {
@@ -36,22 +38,18 @@ public class JsonController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/getroomreservation", method = RequestMethod.POST)
+	@RequestMapping(value = "/testver_getroomreservation", method = RequestMethod.POST)
 	@ResponseBody
-	public PlayerList test_post() {
+	public RoomReservationList test_post() {
 		logger.info("POST - List Return with JSON");
-		ArrayList<Player> list = new ArrayList<Player>();
-		Player vo = null;
-		PlayerList objectVO = new PlayerList();
+		ArrayList<RoomReservation> list = new ArrayList<RoomReservation>();
+		RoomReservation vo = null;
+		RoomReservationList objectVO = new RoomReservationList();
 		// 1번째 데이터
-		vo = new Player();
-		vo.setDeviceId("devId111");
-		vo.setSelectedMapId(1);
+		vo = new RoomReservation(3, null, null, null, null, null, null, null, null); 
 		list.add(vo);
 		// 2번째 데이터
-		vo = new Player();
-		vo.setDeviceId("devId22");
-		vo.setSelectedMapId(2);
+		vo =  new RoomReservation(4, null, null, null, null, null, null, null, null); 
 		list.add(vo);
 
 		objectVO.setList(list);
