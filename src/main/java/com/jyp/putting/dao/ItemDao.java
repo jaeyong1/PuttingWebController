@@ -63,11 +63,11 @@ public class ItemDao {
 	public List<RoomReservation> queryRoomReservations(Map<String, String> paramMap) {
 		List<RoomReservation> arrVo = sqlSession.selectList("queryRoomReservations", paramMap);
 		logger.info("DAO arrVo.size() :" + arrVo.size());
-
-		for (RoomReservation roomReservation : arrVo) {
-			logger.info("  - dao rid: " + roomReservation.getReservedSchduleId() + ", room:" + roomReservation.getReservedRoomNumber());
-		}
-
+		/*-
+				for (RoomReservation roomReservation : arrVo) {
+					logger.info("  - dao rid: " + roomReservation.getReservedSchduleId() + ", room:" + roomReservation.getReservedRoomNumber());
+				}
+		*/
 		return arrVo;
 	}
 
