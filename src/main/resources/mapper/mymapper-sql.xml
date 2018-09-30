@@ -79,4 +79,23 @@
 		WHERE `id` = #{id};
 	</select>
 
+	<!-- 타석예약상황 조회 -->
+	<select id="queryRoomReservations" parameterType="String"
+		resultMap="RoomreservationMap">
+		SELECT
+		ReservedSchduleId,
+		ReservedRoomNumber,
+		ReservedStartTime,
+		ReservedEndTime,
+		CustCode,
+		EmCode,
+		ReservedState
+		FROM `v1_roomreservation`
+		where
+		(
+		ReservedDate = CURDATE()
+		and
+		ShopCode = #{shopcode}
+		);
+</select>
 </mapper>

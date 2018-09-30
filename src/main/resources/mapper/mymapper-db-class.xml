@@ -30,4 +30,15 @@
 		<result property="id" column="id" />
 		<result property="name" column="name" />
 	</resultMap>
+
+	<!-- 타석예약조회 -->
+	<resultMap id="RoomreservationMap" type="com.jyp.shopmanager.domain.RoomReservation">
+		<result property="ReservedSchduleId" column="ReservedSchduleId " />
+		<result property="ReservedRoomNumber" column="ReservedRoomNumber" />
+		<result property="ReservedStartTime" column="ReservedStartTime" />
+		<result property="ReservedEndTime" column="ReservedEndTime" />
+		<result property="CustCode" column="CustCode" />
+		<result property="EmCode" column="EmCode" />
+		<result property="ReservedState" column="ReservedState" />
+	</resultMap>
 </mapper>

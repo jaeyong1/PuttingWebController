@@ -14,6 +14,7 @@ import com.jyp.putting.dao.ItemDao;
 import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.TableVo;
+import com.jyp.shopmanager.domain.RoomReservation;
 
 @Service("itemService")
 public class ItemService {
@@ -77,6 +78,19 @@ public class ItemService {
 			return rvos.get(0);
 		}
 		return null;
+
+	}
+	
+	//타석예약조회
+	public ArrayList<RoomReservation> queryRoomReservations(String shopcode) {
+		logger.info("Item Service - queryRoomReservations. shopcode='{}'", shopcode);
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("shopcode", shopcode);
+		List<RoomReservation> items = itemDao.queryRoomReservations(paramMap);
+		
+		//Return List(for itemDAO/mySQL) -> ArrayList(for Json)
+		ArrayList<RoomReservation> returnArrlist = new ArrayList<RoomReservation>(items);
+		return returnArrlist;
 
 	}
 

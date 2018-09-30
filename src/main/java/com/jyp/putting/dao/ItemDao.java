@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.TableVo;
+import com.jyp.shopmanager.domain.RoomReservation;
 
 @Repository // DAO라고 명시 (DAO를 스프링에서 인식시켜줌)
 public class ItemDao {
@@ -58,4 +59,10 @@ public class ItemDao {
 		return arrVo;
 	}
 
+	//타석예약조회
+	public List<RoomReservation> queryRoomReservations(Map<String, String> paramMap) {
+		List<RoomReservation> arrVo = sqlSession.selectList("queryRoomReservations", paramMap);
+		logger.info("DAO arrVo.size() :" + arrVo.size());
+		return arrVo;
+	}
 }

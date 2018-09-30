@@ -1,9 +1,7 @@
 package com.jyp.shopmanager.domain;
 
 public class RoomReservation {
-	private int ReservedSchduleId;
-	private String ReservedDate;
-	private String ShopCode;
+	private long ReservedSchduleId;
 	private String ReservedRoomNumber;
 	private String ReservedStartTime;
 	private String ReservedEndTime;
@@ -11,12 +9,10 @@ public class RoomReservation {
 	private String EmCode;
 	private String ReservedState;
 
-	public RoomReservation(int reservedSchduleId, String reservedDate, String shopCode, String reservedRoomNumber,
-			String reservedStartTime, String reservedEndTime, String custCode, String emCode, String reservedState) {
+	public RoomReservation(long reservedSchduleId, String reservedRoomNumber, String reservedStartTime,
+			String reservedEndTime, String custCode, String emCode, String reservedState) {
 		super();
 		ReservedSchduleId = reservedSchduleId;
-		ReservedDate = reservedDate;
-		ShopCode = shopCode;
 		ReservedRoomNumber = reservedRoomNumber;
 		ReservedStartTime = reservedStartTime;
 		ReservedEndTime = reservedEndTime;
@@ -25,28 +21,12 @@ public class RoomReservation {
 		ReservedState = reservedState;
 	}
 
-	public int getReservedSchduleId() {
+	public long getReservedSchduleId() {
 		return ReservedSchduleId;
 	}
 
 	public void setReservedSchduleId(int reservedSchduleId) {
 		ReservedSchduleId = reservedSchduleId;
-	}
-
-	public String getReservedDate() {
-		return ReservedDate;
-	}
-
-	public void setReservedDate(String reservedDate) {
-		ReservedDate = reservedDate;
-	}
-
-	public String getShopCode() {
-		return ShopCode;
-	}
-
-	public void setShopCode(String shopCode) {
-		ShopCode = shopCode;
 	}
 
 	public String getReservedRoomNumber() {
