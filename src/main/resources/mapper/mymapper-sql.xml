@@ -79,23 +79,57 @@
 		WHERE `id` = #{id};
 	</select>
 
-	<!-- 타석예약상황 조회 -->
-	<select id="queryRoomReservations" parameterType="String"
-		resultMap="RoomreservationMap">
-		SELECT
-		ReservedSchduleId,
+<!-- ReservedSchduleId,
 		ReservedRoomNumber,
 		ReservedStartTime,
 		ReservedEndTime,
 		CustCode,
 		EmCode,
-		ReservedState
-		FROM `v1_roomreservation`
+		ReservedState -->
+	<!-- 타석예약상황 조회 -->
+	<select id="queryRoomReservations" parameterType="String"
+		resultMap="RoomreservationMap">
+		SELECT *
+		FROM
+		`v1_roomreservation`
 		where
 		(
 		ReservedDate = CURDATE()
 		and
-		ShopCode = #{shopcode}
+		ShopCode =
+		#{shopcode}
 		);
-</select>
+	</select>
+
+	<!-- 타석예약 추가 -->
+	<insert id="insertRoomReservation">
+		INSERT INTO `v1_roomreservation` (
+		`ReservedSchduleId` ,
+		`ReservedDate` ,
+		`ShopCode` ,
+		`ReservedRoomNumber`
+		,
+		`ReservedStartTime` ,
+		`ReservedEndTime` ,
+		`CustCode` ,
+		`EmCode` ,
+		`ReservedState`
+		)
+		VALUES (
+		NULL , CURDATE( ) , #{shopcode},
+		#{ReservedRoomNumber},
+		#{ReservedStartTime},
+		#{ReservedEndTime} ,
+		#{CustCode}, #{EmCode}, #{ReservedState}
+		);
+
+	</insert>
+
+	<!-- 타석예약상황 최종 PK -->
+	<select id="queryPK_RoomReservations" resultType="string">
+		SELECT
+		ReservedSchduleId FROM
+		`v1_roomreservation` ORDER BY
+		`ReservedSchduleId` DESC LIMIT 0 , 1
+	</select>
 </mapper>

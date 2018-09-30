@@ -33,7 +33,7 @@
 
 	<!-- 타석예약조회 -->
 	<resultMap id="RoomreservationMap" type="com.jyp.shopmanager.domain.RoomReservation">
-		<result property="ReservedSchduleId" column="ReservedSchduleId " />
+		<result property="ReservedSchduleId" column="ReservedSchduleId" />
 		<result property="ReservedRoomNumber" column="ReservedRoomNumber" />
 		<result property="ReservedStartTime" column="ReservedStartTime" />
 		<result property="ReservedEndTime" column="ReservedEndTime" />

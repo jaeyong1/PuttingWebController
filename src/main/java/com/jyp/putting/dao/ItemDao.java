@@ -59,10 +59,25 @@ public class ItemDao {
 		return arrVo;
 	}
 
-	//타석예약조회
+	// 타석예약 조회
 	public List<RoomReservation> queryRoomReservations(Map<String, String> paramMap) {
 		List<RoomReservation> arrVo = sqlSession.selectList("queryRoomReservations", paramMap);
 		logger.info("DAO arrVo.size() :" + arrVo.size());
+
+		for (RoomReservation roomReservation : arrVo) {
+			logger.info("  - dao rid: " + roomReservation.getReservedSchduleId() + ", room:" + roomReservation.getReservedRoomNumber());
+		}
+
 		return arrVo;
+	}
+
+	// 타석예약 추가
+	public synchronized String insertRoomReservation(Map<String, String> paramMap) {
+		// insert item
+		sqlSession.insert("insertRoomReservation", paramMap);
+		Long pknum = Long.parseLong((String) sqlSession.selectOne("queryPK_RoomReservations"));
+		String pk = String.format("%d", pknum);
+		logger.info("DAO PK :" + pk);
+		return pk;
 	}
 }

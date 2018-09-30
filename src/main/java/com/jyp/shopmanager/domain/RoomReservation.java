@@ -9,6 +9,11 @@ public class RoomReservation {
 	private String EmCode;
 	private String ReservedState;
 
+	//json request body(when insert)
+	public RoomReservation() {
+		super();
+	}
+
 	public RoomReservation(long reservedSchduleId, String reservedRoomNumber, String reservedStartTime,
 			String reservedEndTime, String custCode, String emCode, String reservedState) {
 		super();
@@ -25,7 +30,7 @@ public class RoomReservation {
 		return ReservedSchduleId;
 	}
 
-	public void setReservedSchduleId(int reservedSchduleId) {
+	public void setReservedSchduleId(long reservedSchduleId) {
 		ReservedSchduleId = reservedSchduleId;
 	}
 

@@ -81,7 +81,7 @@ public class ItemService {
 
 	}
 	
-	//타석예약조회
+	//타석예약 조회
 	public ArrayList<RoomReservation> queryRoomReservations(String shopcode) {
 		logger.info("Item Service - queryRoomReservations. shopcode='{}'", shopcode);
 		Map<String, String> paramMap = new HashMap<String, String>();
@@ -92,6 +92,24 @@ public class ItemService {
 		ArrayList<RoomReservation> returnArrlist = new ArrayList<RoomReservation>(items);
 		return returnArrlist;
 
+	}
+
+	//타석예약 추가
+	public String insertRoomReservation(String shopcode, RoomReservation roomreserv) {
+		logger.info("Item Service - insertRoomReservation. shopcode='{}'", shopcode);
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("shopcode", shopcode);
+		paramMap.put("ReservedRoomNumber", roomreserv.getReservedRoomNumber());
+		paramMap.put("ReservedStartTime", roomreserv.getReservedStartTime());
+		paramMap.put("ReservedEndTime", roomreserv.getReservedEndTime());
+		paramMap.put("CustCode", roomreserv.getCustCode());
+		paramMap.put("EmCode", roomreserv.getEmCode());
+		paramMap.put("ReservedState", roomreserv.getReservedState());
+		
+		String pk = itemDao.insertRoomReservation(paramMap);
+		logger.info("Item Service - insertRoomReservation. new PK : " + pk);
+
+		return pk;
 	}
 
 }
