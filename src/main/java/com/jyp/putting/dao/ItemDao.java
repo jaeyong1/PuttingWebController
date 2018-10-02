@@ -83,8 +83,16 @@ public class ItemDao {
 
 	// 타석예약 삭제
 	public synchronized void deleteRoomReservation(Map<String, String> paramMap) {
-		// insert item
+		// delete item
 		sqlSession.delete("deleteRoomReservation", paramMap);
 		return;
 	}
+
+	// 타석예약 업데이트
+	public synchronized void updateRoomReservation(Map<String, String> paramMap) {
+		// update item
+		sqlSession.update("updateRoomReservation", paramMap);
+		return;
+	}
+
 }

@@ -136,5 +136,20 @@
 		AND `ShopCode` = #{shopcode};
 	</delete>
 
+	<!-- 타석예약 업데이트 -->
+	<update id="updateRoomReservation" parameterType="String">
+		UPDATE
+		`v1_roomreservation` SET `ReservedRoomNumber`
+		= #{ReservedRoomNumber},
+		`ReservedStartTime` = #{ReservedStartTime},
+		`ReservedEndTime` =
+		#{ReservedEndTime} ,
+		`CustCode` = #{CustCode},
+		`EmCode` = #{EmCode},
+		`ReservedState` = #{ReservedState}
+		WHERE
+		`ReservedSchduleId`=#{ReservedSchduleId}
+		AND `ShopCode` = #{shopcode};
+	</update>
 
 </mapper>

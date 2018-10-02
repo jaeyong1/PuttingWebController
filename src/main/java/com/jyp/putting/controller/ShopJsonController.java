@@ -62,9 +62,21 @@ public class ShopJsonController {
 	@RequestMapping(value = "/testver_deleteroomreservation", method = RequestMethod.POST)
 	@ResponseBody
 	public void testver_deleteroomreservation(@RequestBody RoomReservation roomreserv) {
-		logger.info("POST - [TEST ver] Delete Room reservation. pk:" + roomreserv.getReservedSchduleId() + ", cust:" + roomreserv.getCustCode() + ", room:"
-				+ roomreserv.getReservedRoomNumber());
+		logger.info("POST - [TEST ver] Delete Room reservation. pk:" + roomreserv.getReservedSchduleId() + ", cust:"
+				+ roomreserv.getCustCode() + ", room:" + roomreserv.getReservedRoomNumber());
 		itemService.deleteRoomReservation("SC000002", roomreserv);
+		return;
+	}
+
+	/**
+	 * 타석예약 업데이트
+	 */
+	@RequestMapping(value = "/testver_updateroomreservation", method = RequestMethod.POST)
+	@ResponseBody
+	public void testver_updateroomreservation(@RequestBody RoomReservation roomreserv) {
+		logger.info("POST - [TEST ver] Update Room reservation. pk:" + roomreserv.getReservedSchduleId() + ", cust:"
+				+ roomreserv.getCustCode() + ", room:" + roomreserv.getReservedRoomNumber());
+		itemService.updateRoomReservation("SC000002", roomreserv);
 		return;
 	}
 

@@ -132,4 +132,23 @@ public class ItemService {
 		return;
 	}
 
+	// 타석예약 업데이트
+	public void updateRoomReservation(String shopcode, RoomReservation roomreserv) {
+		logger.info("Item Service - updateRoomReservation. shopcode='{}'", shopcode);
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("shopcode", shopcode);
+		paramMap.put("ReservedSchduleId", roomreserv.getReservedSchduleId() + "");
+		paramMap.put("ReservedRoomNumber", roomreserv.getReservedRoomNumber());
+		paramMap.put("ReservedStartTime", roomreserv.getReservedStartTime());
+		paramMap.put("ReservedEndTime", roomreserv.getReservedEndTime());
+		paramMap.put("CustCode", roomreserv.getCustCode());
+		paramMap.put("EmCode", roomreserv.getEmCode());
+		paramMap.put("ReservedState", roomreserv.getReservedState());
+
+		itemDao.updateRoomReservation(paramMap);
+		logger.info("Item Service - updateRoomReservation. pk : " + roomreserv.getReservedSchduleId());
+
+		return;
+	}
+
 }
