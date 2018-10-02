@@ -80,36 +80,56 @@ public class ItemService {
 		return null;
 
 	}
-	
-	//타석예약 조회
+
+	// 타석예약 조회
 	public ArrayList<RoomReservation> queryRoomReservations(String shopcode) {
 		logger.info("Item Service - queryRoomReservations. shopcode='{}'", shopcode);
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("shopcode", shopcode);
 		List<RoomReservation> items = itemDao.queryRoomReservations(paramMap);
-		
-		//Return List(for itemDAO/mySQL) -> ArrayList(for Json)
+
+		// Return List(for itemDAO/mySQL) -> ArrayList(for Json)
 		ArrayList<RoomReservation> returnArrlist = new ArrayList<RoomReservation>(items);
 		return returnArrlist;
 
 	}
 
-	//타석예약 추가
+	// 타석예약 추가
 	public String insertRoomReservation(String shopcode, RoomReservation roomreserv) {
 		logger.info("Item Service - insertRoomReservation. shopcode='{}'", shopcode);
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("shopcode", shopcode);
+		paramMap.put("ReservedSchduleId", roomreserv.getReservedSchduleId() + "");// not_use
 		paramMap.put("ReservedRoomNumber", roomreserv.getReservedRoomNumber());
 		paramMap.put("ReservedStartTime", roomreserv.getReservedStartTime());
 		paramMap.put("ReservedEndTime", roomreserv.getReservedEndTime());
 		paramMap.put("CustCode", roomreserv.getCustCode());
 		paramMap.put("EmCode", roomreserv.getEmCode());
 		paramMap.put("ReservedState", roomreserv.getReservedState());
-		
+
 		String pk = itemDao.insertRoomReservation(paramMap);
 		logger.info("Item Service - insertRoomReservation. new PK : " + pk);
 
 		return pk;
+	}
+
+	// 타석예약 삭제
+	public void deleteRoomReservation(String shopcode, RoomReservation roomreserv) {
+		logger.info("Item Service - deleteRoomReservation. shopcode='{}'", shopcode);
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("shopcode", shopcode);
+		paramMap.put("ReservedSchduleId", roomreserv.getReservedSchduleId() + "");
+		paramMap.put("ReservedRoomNumber", roomreserv.getReservedRoomNumber());// not_use
+		paramMap.put("ReservedStartTime", roomreserv.getReservedStartTime());// not_use
+		paramMap.put("ReservedEndTime", roomreserv.getReservedEndTime());// not_use
+		paramMap.put("CustCode", roomreserv.getCustCode());// not_use
+		paramMap.put("EmCode", roomreserv.getEmCode());// not_use
+		paramMap.put("ReservedState", roomreserv.getReservedState());// not_use
+
+		itemDao.deleteRoomReservation(paramMap);
+		logger.info("Item Service - removeRoomReservation. pk : " + roomreserv.getReservedSchduleId());
+
+		return;
 	}
 
 }

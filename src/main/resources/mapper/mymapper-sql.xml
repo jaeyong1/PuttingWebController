@@ -79,13 +79,8 @@
 		WHERE `id` = #{id};
 	</select>
 
-<!-- ReservedSchduleId,
-		ReservedRoomNumber,
-		ReservedStartTime,
-		ReservedEndTime,
-		CustCode,
-		EmCode,
-		ReservedState -->
+	<!-- ReservedSchduleId, ReservedRoomNumber, ReservedStartTime, ReservedEndTime, 
+		CustCode, EmCode, ReservedState -->
 	<!-- 타석예약상황 조회 -->
 	<select id="queryRoomReservations" parameterType="String"
 		resultMap="RoomreservationMap">
@@ -94,7 +89,8 @@
 		`v1_roomreservation`
 		where
 		(
-		ReservedDate = CURDATE()
+		ReservedDate =
+		CURDATE()
 		and
 		ShopCode =
 		#{shopcode}
@@ -132,4 +128,13 @@
 		`v1_roomreservation` ORDER BY
 		`ReservedSchduleId` DESC LIMIT 0 , 1
 	</select>
+
+	<!-- 타석예약 삭제 -->
+	<delete id="deleteRoomReservation">
+		DELETE FROM `v1_roomreservation` WHERE
+		`ReservedSchduleId`=#{ReservedSchduleId}
+		AND `ShopCode` = #{shopcode};
+	</delete>
+
+
 </mapper>

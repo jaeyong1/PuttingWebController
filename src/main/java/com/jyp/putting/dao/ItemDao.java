@@ -80,4 +80,11 @@ public class ItemDao {
 		logger.info("DAO PK :" + pk);
 		return pk;
 	}
+
+	// 타석예약 삭제
+	public synchronized void deleteRoomReservation(Map<String, String> paramMap) {
+		// insert item
+		sqlSession.delete("deleteRoomReservation", paramMap);
+		return;
+	}
 }
