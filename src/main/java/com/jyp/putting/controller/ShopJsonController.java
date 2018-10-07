@@ -1,11 +1,16 @@
 package com.jyp.putting.controller;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +20,7 @@ import com.jyp.putting.domain.TableVo;
 import com.jyp.putting.service.ItemService;
 import com.jyp.shopmanager.domain.RoomReservation;
 import com.jyp.shopmanager.domain.RoomReservationList;
+import com.jyp.shopmanager.domain.SimpleWebRoomReservation;
 
 @Controller
 public class ShopJsonController {
@@ -80,4 +86,26 @@ public class ShopJsonController {
 		return;
 	}
 
+	/**
+	 * 타석예약 조회 -웹페이지
+	 * 
+	 */
+	@RequestMapping(value = "/roomstatus", method = RequestMethod.GET)
+	public String roomstatus(Locale locale, Model model, HttpServletRequest request, HttpSession session) {
+		String shopcode = request.getParameter("shopcode");
+
+		logger.info("Get - View roomstatus. shopcode={}.", shopcode);
+		if (shopcode == null) {
+			logger.info("Get - fielddata. shopcode is null. > test version. set to shopcode=SC000002");
+			shopcode = "SC000002";
+		}
+		// Get reservation status
+		ArrayList<SimpleWebRoomReservation> items = itemService.queryCurrentRoomReservationStatus(shopcode);
+
+		// Return current status list
+		System.out.println("created list . #rooms:" + items.size());
+		model.addAttribute("items", items);
+
+		return "roomstatus";// .jpp
+	}
 }

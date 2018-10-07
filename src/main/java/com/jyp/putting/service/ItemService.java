@@ -15,6 +15,7 @@ import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.TableVo;
 import com.jyp.shopmanager.domain.RoomReservation;
+import com.jyp.shopmanager.domain.SimpleWebRoomReservation;
 
 @Service("itemService")
 public class ItemService {
@@ -149,6 +150,68 @@ public class ItemService {
 		logger.info("Item Service - updateRoomReservation. pk : " + roomreserv.getReservedSchduleId());
 
 		return;
+	}
+
+	// 타석예약 조회 - 현재상태 / 웹 / 실플하게
+	// 타석개수가 지금은 DUMMY 값 20
+	public ArrayList<SimpleWebRoomReservation> queryCurrentRoomReservationStatus(String shopcode) {
+		logger.info("Item Service - queryCurrentRoomReservationStatus. shopcode='{}'", shopcode);
+		int NumOfRooms = 1;
+		int i = 0;
+		int j = 0;
+
+		if (shopcode.equals("SC000002")) {
+			logger.info("Get - fielddata. shopcode is null. > test version. set to shopcode=SC000002");
+
+			// Get rooms
+			// [DUMMY] NumOfRooms = 20
+
+			NumOfRooms = 20;
+		}
+
+		// init return array
+		ArrayList<SimpleWebRoomReservation> retSimpleRoomreservtions = new ArrayList<SimpleWebRoomReservation>();
+		for (i = 1; i <= NumOfRooms; i++) { // 타석번호는 1부터시작..
+			retSimpleRoomreservtions.add(new SimpleWebRoomReservation(i, "00:00", "미사용", 0));
+		}
+
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("shopcode", shopcode);
+		List<RoomReservation> items = itemDao.queryRoomReservations(paramMap);// db-query
+
+		// for web internal processing
+		ArrayList<RoomReservation> arrRoomreservationItems = new ArrayList<RoomReservation>(items);
+
+		// calc current room status based on queryRoomReservations
+		int waiting = 0;
+		for (i = 1; i <= NumOfRooms; i++) { // 타석번호는 1부터시작..			
+			waiting = 0;
+			for (j = 0; j < arrRoomreservationItems.size(); j++) {
+				// 대기인원 카운트
+				if (arrRoomreservationItems.get(j).getReservedRoomNumber().equals(i + "")
+						&& arrRoomreservationItems.get(j).getReservedState().equals("대기중")
+						&& arrRoomreservationItems.get(j).getReservedStartTime().equals("00:00")) {
+
+					// '시간미정인경우만 세컨드스크린 대기인원표시
+					waiting = waiting + 1;
+					retSimpleRoomreservtions.get(i-1).setWaiting(waiting);
+
+				} // if
+			} // for j
+
+			for (j = 0; j < arrRoomreservationItems.size(); j++) {
+				// [사용중] 남은시간 표시
+				if (arrRoomreservationItems.get(j).getReservedRoomNumber().equals(i + "")
+						&& arrRoomreservationItems.get(j).getReservedState().equals("사용중")) {
+					retSimpleRoomreservtions.get(i-1).setReservedState("사용중");
+					retSimpleRoomreservtions.get(i-1).setReservedEndTime(arrRoomreservationItems.get(j).getReservedEndTime());
+				} // if
+			} // for j
+
+		}
+
+		return retSimpleRoomreservtions;
+
 	}
 
 }
