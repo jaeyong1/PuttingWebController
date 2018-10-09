@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jyp.putting.domain.FieldItem;
 import com.jyp.putting.domain.TableVo;
 import com.jyp.putting.service.ItemService;
 import com.jyp.shopmanager.domain.RoomReservation;
@@ -107,5 +108,12 @@ public class ShopJsonController {
 		model.addAttribute("items", items);
 
 		return "roomstatus";// .jpp
+	}
+
+	@RequestMapping(value = "/shopmanager", method = RequestMethod.GET)
+	public String shopmanagerGet(Locale locale, HttpServletRequest request, Model model) {
+		logger.info("Get - shopmanager");
+
+		return "shopmanager";
 	}
 }
