@@ -17,10 +17,10 @@
 	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
 	crossorigin="anonymous">
 
-<title>Hello, world!</title>
+<title>타석사용현황</title>
 </head>
 <body>
-	<h3>타석사용현황</h3>
+	<h3></h3>
 
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -39,38 +39,40 @@
 
 
 
-	<table border="1">
-		<tr>
-			<td width="199">
-				<p>타석</p>
-			</td>
-			<td width="199">
-				<p>현재상태</p>
-			</td>
-			<td width="199">
-				<p>종료시간(예정)</p>
-			</td>
-			<td width="199">
-				<p>대기수</p>
-			</td>
-		</tr>
-		<!-- DB 데이터 채움 (클래스 변수사용) -->
-		<c:forEach var="i" items="${items}" varStatus="status">
+	<table class="table table-striped">
+		<thead>
 			<tr>
-				<td width="199">
-					<p>${i.reservedRoomNumber}</p>
-				</td>
-				<td width="199">
-					<p>${i.reservedState}</p>
-				</td>
-				<td width="199">
-					<p>${i.reservedEndTime}</p>
-				</td>
-				<td width="199">
-					<p>${i.waiting}</p>
-				</td>
+				<th scope="col" class="text-center">타석</th>
+				<th scope="col" class="text-center">현재상태</th>
+				<th scope="col" class="text-center">종료시간(예정)</th>
+				<th scope="col" class="text-center">대기수</th>
 			</tr>
-		</c:forEach>
+		</thead>
+
+		<tbody>
+			<!-- DB 데이터 채움 (클래스 변수사용) -->
+			<c:forEach var="i" items="${items}" varStatus="status">
+				<tr>
+					<th scope="row" class="text-center">${i.reservedRoomNumber}</th>
+
+					<c:choose>
+						<c:when test="${('미사용' == i.reservedState) }">
+							<td class="table-success text-center">${i.reservedState}</td>
+						</c:when>
+					</c:choose>
+					<c:choose>
+						<c:when test="${('사용중' == i.reservedState) }">
+							<td class="table-danger text-center">${i.reservedState}</td>
+						</c:when>
+					</c:choose>
+
+
+					<td class="text-center">${i.reservedEndTime}</td>
+					<td class="text-center">${i.waiting}명</td>
+
+				</tr>
+			</c:forEach>
+		</tbody>
 
 	</table>
 	<p>&nbsp;</p>

@@ -46,14 +46,21 @@ public class HomeController {
 	}
 
 	/** 초기화 함수 */
+	/*-
+	 * 
+	 * [MQTT를 임시로 시작하지 않기위해 static{}를 막음]
+	 * 
+	 */
+	/*-
 	static {
 		// MQTT Fatal 감시 데몬 시작
 		Thread mqttfatalth = new Thread(new MQTTFatalCheckDaemonThread());
 		mqttfatalth.start();
-
+	
 		// MQTT Broker 서버연결
 		mqttclient = new MQTTMonitor();
 	}
+	*/
 
 	/**
 	 * MQTT에 Exception 발생시 재시작
@@ -191,9 +198,6 @@ public class HomeController {
 		}
 		return "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,DUMMY";
 	}
-	
-
-
 
 }
 
