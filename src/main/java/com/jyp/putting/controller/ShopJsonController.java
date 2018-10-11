@@ -116,4 +116,11 @@ public class ShopJsonController {
 
 		return "shopmanager";
 	}
+	
+	@RequestMapping(value = "/shopmanager2", method = RequestMethod.GET)
+	public String shopmanager2Get(Locale locale, HttpServletRequest request, Model model) {
+		logger.info("Get - shopmanager");
+
+		return "shopmanager2";
+	}
 }
