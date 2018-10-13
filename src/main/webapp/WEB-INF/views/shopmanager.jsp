@@ -293,7 +293,7 @@
                   <i class="fa fa-check"></i> <a href="https://www.microsoft.com/net/download/dotnet-framework-runtime/net452" >.Net Framework 4.5.2 다운로드</a>
                 </li>
                 <li>
-                  <i class="fa fa-check"></i> <a href="file/Shopmanager_v0.52.zip" >ShopManager 다운로드</a>
+                  <i class="fa fa-check"></i> <a href="file/Shopmanager_v0.53.zip" >ShopManager 다운로드</a>
                 </li>
                 <li>
                   <i class="fa fa-check"></i> ShopManager 압축해제 및 exe파일 실행
