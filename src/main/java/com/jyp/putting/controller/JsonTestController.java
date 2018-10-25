@@ -1,14 +1,23 @@
 package com.jyp.putting.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +26,10 @@ import com.jyp.putting.domain.Player;
 import com.jyp.putting.domain.PlayerList;
 import com.jyp.putting.domain.TableVo;
 import com.jyp.putting.service.ItemService;
+import com.jyp.shopmanager.domain.JSONResponse;
+import com.jyp.shopmanager.domain.JSONResponseErrorMessages;
+import com.jyp.shopmanager.domain.RoomReservation;
+import com.jyp.shopmanager.domain.RoomReservationList;
 
 @Controller
 public class JsonTestController {
@@ -117,4 +130,66 @@ public class JsonTestController {
 
 	}
 
+	// 토큰을 사용한 로그인
+	@RequestMapping(value = "/shopmanager_emlogin", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONResponse shopmanagerLoginPost(Locale locale, HttpServletRequest request, Model model) {
+		logger.info("POST - shopmanager_login");
+		JSONResponse response = new JSONResponse();
+		encryptPassword("aaa");
+
+		response.success(encryptPassword("aaa"));
+		return response;
+	}
+
+	private static String encryptPassword(String password) {
+		/*- ref: https://stackoverflow.com/questions/4895523/java-string-to-sha1 
+		 * 
+		 */
+		String sha1 = "";
+		try {
+			MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+			crypt.reset();
+			crypt.update(password.getBytes("UTF-8"));
+			sha1 = byteToHex(crypt.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return sha1;
+	}
+
+	private static String byteToHex(final byte[] hash) {
+		Formatter formatter = new Formatter();
+		for (byte b : hash) {
+			formatter.format("%02x", b);
+		}
+		String result = formatter.toString();
+		formatter.close();
+		return result;
+	}
+
+	@RequestMapping(value = "/shopmanager_readtest_ok", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONResponse shopmanagerTestReadOkPOST(Locale locale, @RequestHeader("x-access-token") String xtoken,
+			HttpServletRequest request, Model model) {
+		logger.info("POST - shopmanager_readtest_ok - x-access-token:" + xtoken);
+		JSONResponse response = new JSONResponse();
+		RoomReservation a = new RoomReservation();
+
+		response.success(a);
+
+		return response;
+	}
+
+	@RequestMapping(value = "/shopmanager_readtest_fail", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONResponse shopmanagerTestReadFailPOST(Locale locale, @RequestHeader("x-access-token") String xtoken,
+			HttpServletRequest request, Model model) {
+		logger.info("POST - shopmanager_readtest_ok - x-access-token:" + xtoken);
+		JSONResponse response = new JSONResponse();
+		response.error(JSONResponseErrorMessages.LoginAgain);
+		return response;
+	}
 }
