@@ -44,7 +44,7 @@
 			<tr>
 				<th scope="col" class="text-center">타석</th>
 				<th scope="col" class="text-center">현재상태</th>
-				<th scope="col" class="text-center">종료시간(예정)</th>
+				<th scope="col" class="text-center">남은시간</th>
 				<th scope="col" class="text-center">대기수</th>
 			</tr>
 		</thead>
@@ -63,6 +63,11 @@
 					<c:choose>
 						<c:when test="${('사용중' == i.reservedState) }">
 							<td class="table-danger text-center">${i.reservedState}</td>
+						</c:when>
+					</c:choose>
+					<c:choose>
+						<c:when test="${('정리중' == i.reservedState) }">
+							<td class="table-warning text-center">${i.reservedState}</td>
 						</c:when>
 					</c:choose>
 

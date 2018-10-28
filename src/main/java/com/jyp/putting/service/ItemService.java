@@ -1,9 +1,15 @@
 package com.jyp.putting.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +190,7 @@ public class ItemService {
 
 		// calc current room status based on queryRoomReservations
 		int waiting = 0;
-		for (i = 1; i <= NumOfRooms; i++) { // 타석번호는 1부터시작..			
+		for (i = 1; i <= NumOfRooms; i++) { // 타석번호는 1부터시작..
 			waiting = 0;
 			for (j = 0; j < arrRoomreservationItems.size(); j++) {
 				// 대기인원 카운트
@@ -194,7 +200,7 @@ public class ItemService {
 
 					// '시간미정인경우만 세컨드스크린 대기인원표시
 					waiting = waiting + 1;
-					retSimpleRoomreservtions.get(i-1).setWaiting(waiting);
+					retSimpleRoomreservtions.get(i - 1).setWaiting(waiting);
 
 				} // if
 			} // for j
@@ -203,8 +209,30 @@ public class ItemService {
 				// [사용중] 남은시간 표시
 				if (arrRoomreservationItems.get(j).getReservedRoomNumber().equals(i + "")
 						&& arrRoomreservationItems.get(j).getReservedState().equals("사용중")) {
-					retSimpleRoomreservtions.get(i-1).setReservedState("사용중");
-					retSimpleRoomreservtions.get(i-1).setReservedEndTime(arrRoomreservationItems.get(j).getReservedEndTime());
+					retSimpleRoomreservtions.get(i - 1).setReservedState("사용중");
+					SimpleDateFormat f = new SimpleDateFormat("HH:mm", Locale.KOREA);
+
+					// retSimpleRoomreservtions.get(i-1).setReservedEndTime(arrRoomreservationItems.get(j).getReservedEndTime());
+					// //종료시간(고정값)->잔여시간(계산값)
+					// 잔여시간계산
+					try {
+						DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+						Date dbendtime = f.parse(arrRoomreservationItems.get(j).getReservedEndTime()); //DB종료시간
+						Date dbnow = f.parse(dateFormat.format(new Date())); //현재시간
+
+						long diff = 0;
+						if (dbendtime.getTime() < dbnow.getTime()) {//시간초과시
+							retSimpleRoomreservtions.get(i - 1).setReservedState("정리중");
+							diff = dbnow.getTime() - dbendtime.getTime();
+						} else {  //사용중 남은시간
+							diff = dbendtime.getTime() - dbnow.getTime();
+						}
+
+						String remainTime = convertTimeMil2HM(diff);
+						retSimpleRoomreservtions.get(i - 1).setReservedEndTime(remainTime);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				} // if
 			} // for j
 
@@ -213,5 +241,15 @@ public class ItemService {
 		return retSimpleRoomreservtions;
 
 	}
+	
+	private static final String REMAIN_TIME_FORMAT = "%02d:%02d";
+
+	public static String convertTimeMil2HM(long milliseconds) {
+		int seconds = (int) (milliseconds / 1000) % 60 ;
+		int minutes = (int) ((milliseconds / (1000*60)) % 60);
+		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+		
+	      return String.format(REMAIN_TIME_FORMAT, hours, minutes );
+	   }
 
 }
